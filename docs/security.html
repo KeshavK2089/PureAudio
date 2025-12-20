@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security - PureAudio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        .legal-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 2rem 4rem;
+        }
+
+        .legal-header {
+            margin-bottom: 3rem;
+        }
+
+        .legal-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .legal-date {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .legal-section {
+            margin-bottom: 2rem;
+        }
+
+        .legal-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+
+        .legal-section p,
+        .legal-section li {
+            color: var(--gray-700);
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .legal-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .legal-section ul li::before {
+            content: "• ";
+            color: var(--primary-purple);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary-purple-subtle);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span class="logo-text">PureAudio</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#how-it-works" class="nav-link">How It Works</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+                <a href="index.html#download" class="btn btn-primary">Download Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Security Content -->
+    <div class="legal-page">
+        <div class="legal-header">
+            <h1 class="legal-title">Security</h1>
+            <p class="legal-date">Your data security is our top priority</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>🔐 End-to-End Encryption</h2>
+            <p>All audio files are transmitted using industry-standard HTTPS/TLS encryption. Your files are encrypted in
+                transit from your device to our processing servers and back.</p>
+            <div class="security-badge">
+                ✓ 256-bit SSL/TLS encryption
+            </div>
+        </div>
+
+        <div class="legal-section">
+            <h2>⚡ Temporary Processing</h2>
+            <p>Your audio files are processed on secure GPU servers and immediately deleted after processing completes.
+                We do not retain copies of your original files or processed results.</p>
+            <ul>
+                <li>Files deleted within seconds of processing completion</li>
+                <li>No permanent storage of user content</li>
+                <li>Automatic cleanup of temporary files</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>🔒 Data Privacy</h2>
+            <p>We implement strict data privacy measures:</p>
+            <ul>
+                <li>No sharing of user data with third parties</li>
+                <li>Files never used for AI model training</li>
+                <li>Minimal data collection (only what's needed for processing)</li>
+                <li>Compliance with international privacy standards</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>☁️ Secure Infrastructure</h2>
+            <p>Our processing infrastructure is built on enterprise-grade cloud services:</p>
+            <ul>
+                <li>Modal cloud platform with SOC 2 Type II certification</li>
+                <li>Isolated processing environments for each request</li>
+                <li>Regular security audits and updates</li>
+                <li>DDoS protection and rate limiting</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>📱 Device Security</h2>
+            <p>PureAudio leverages iOS security features:</p>
+            <ul>
+                <li>Sandboxed app environment</li>
+                <li>Secure local file storage</li>
+                <li>Permission-based access to Photos and Files</li>
+                <li>No background data collection</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>🛡️ Best Practices</h2>
+            <p>We follow industry security best practices:</p>
+            <ul>
+                <li>Regular security patches and updates</li>
+                <li>Secure coding standards</li>
+                <li>Input validation and sanitization</li>
+                <li>Protection against common vulnerabilities</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>🔍 Transparency</h2>
+            <p>We believe in transparency about our security practices:</p>
+            <ul>
+                <li>Open about which third-party services we use</li>
+                <li>Clear documentation of data handling</li>
+                <li>Prompt notification of any security incidents</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>📧 Report Security Issues</h2>
+            <p>If you discover a security vulnerability, please help us protect our users by reporting it responsibly.
+            </p>
+            <p>Contact us at: <a href="mailto:keshavkotteswaran@gmail.com"
+                    style="color: var(--primary-purple);">keshavkotteswaran@gmail.com</a></p>
+            <p style="font-size: 0.875rem; color: var(--gray-600); margin-top: 1rem;">We appreciate responsible
+                disclosure and will work to address any confirmed issues promptly.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span class="logo-text">PureAudio</span>
+                </a>
+                <p class="footer-tagline">AI-powered audio editing for everyone</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="index.html#features" class="footer-link">Features</a>
+                    <a href="index.html#pricing" class="footer-link">Pricing</a>
+                    <a href="index.html#download" class="footer-link">Download</a>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Support</h4>
+                    <a href="index.html#how-it-works" class="footer-link">How It Works</a>
+                    <a href="mailto:keshavkotteswaran@gmail.com" class="footer-link">Contact</a>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Legal</h4>
+                    <a href="privacy.html" class="footer-link">Privacy</a>
+                    <a href="terms.html" class="footer-link">Terms</a>
+                    <a href="security.html" class="footer-link">Security</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p class="footer-copyright">© 2024 PureAudio. All rights reserved. Powered by Meta SAM Audio.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
