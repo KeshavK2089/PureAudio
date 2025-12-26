@@ -320,9 +320,9 @@ class MainViewModel: ObservableObject {
     
     /// Common prompt suggestions
     let promptSuggestions = [
-        "voice", "wind noise", "music", "guitar",
+        "speech", "wind", "music", "guitar",
         "dog barking", "traffic", "crowd", "siren",
-        "background noise", "keyboard", "footsteps", "door"
+        "keyboard clicking", "footsteps", "door slamming"
     ]
     
     /// Apply a suggestion

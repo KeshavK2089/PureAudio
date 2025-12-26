@@ -30,7 +30,7 @@ extension AudioPreset {
             title: "Isolate Voice",
             description: "Extract speech, remove background",
             mode: .isolate,
-            prompt: "A person speaking"
+            prompt: "speech"
         ),
         
         // Noise removal
@@ -39,7 +39,7 @@ extension AudioPreset {
             title: "Remove Noise",
             description: "Clean up unwanted sounds",
             mode: .remove,
-            prompt: "Background noise and ambient sounds"
+            prompt: "noise"
         ),
         
         // Wind
@@ -48,7 +48,7 @@ extension AudioPreset {
             title: "Remove Wind",
             description: "Fix outdoor recordings",
             mode: .remove,
-            prompt: "Wind noise"
+            prompt: "wind"
         ),
         
         // Music
@@ -57,7 +57,7 @@ extension AudioPreset {
             title: "Isolate Music",
             description: "Keep music, remove speech",
             mode: .isolate,
-            prompt: "Music and instruments"
+            prompt: "music"
         ),
         
         // Vocals
@@ -66,7 +66,7 @@ extension AudioPreset {
             title: "Isolate Vocals",
             description: "Extract singing voice",
             mode: .isolate,
-            prompt: "Singing voice and vocals"
+            prompt: "singing"
         ),
         
         // Remove music
@@ -75,7 +75,7 @@ extension AudioPreset {
             title: "Remove Music",
             description: "Keep speech, remove music",
             mode: .remove,
-            prompt: "Background music"
+            prompt: "music"
         )
     ]
 }

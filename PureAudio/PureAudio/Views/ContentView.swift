@@ -216,8 +216,8 @@ struct ContentView: View {
                 .foregroundColor(.subtleGray)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    ExamplePromptRow(icon: "wind", text: "\"wind noise\" - remove wind")
-                    ExamplePromptRow(icon: "person.fill", text: "\"voice\" - isolate speaking")
+                    ExamplePromptRow(icon: "wind", text: "\"wind\" - remove wind")
+                    ExamplePromptRow(icon: "person.fill", text: "\"speech\" - isolate speaking")
                     ExamplePromptRow(icon: "guitars.fill", text: "\"guitar\" - extract music")
                 }
             }
