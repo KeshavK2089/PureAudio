@@ -25,7 +25,6 @@ class MainViewModel: ObservableObject {
     @Published var showingResult = false
     @Published var showingShareSheet = false
     @Published var showingSubscription = false
-    @Published var showingURLExtractor = false
     
     // Processing state
     private let audioProcessor = AudioProcessor()

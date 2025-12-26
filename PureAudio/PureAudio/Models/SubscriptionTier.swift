@@ -83,21 +83,10 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         return true  // Available to all tiers - no server cost
     }
     
-    /// Can extract audio from TikTok/Instagram URLs (Pro+) - requires backend
-    var canExtractURL: Bool {
-        switch self {
-        case .free, .basic: return false
-        case .pro, .professional: return true
-        }
-    }
-    
     /// Can use tap-to-isolate in video mode (Unlimited only)
     var canTapToIsolate: Bool {
         self == .professional
     }
-    
-    /// Minimum tier required for URL extraction
-    static var urlExtractMinTier: SubscriptionTier { .pro }
     
     /// Minimum tier required for tap-to-isolate
     static var tapToIsolateMinTier: SubscriptionTier { .professional }

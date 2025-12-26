@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import os.log
 internal import Combine
 
 /// Main audio processor coordinating the workflow
@@ -28,12 +29,12 @@ class AudioProcessor: ObservableObject {
         mode: ProcessingMode
     ) async {
         // Validate file
-        print("[AudioProcessor] Starting processAudio for: \(file.filename)")
+        Logger.audioProcessor.info("Starting processAudio for: \(file.filename)")
         do {
             try validateFile(file)
-            print("[AudioProcessor] File validated")
+            Logger.audioProcessor.debug("File validated")
         } catch {
-            print("[AudioProcessor] File validation failed: \(error)")
+            Logger.audioProcessor.error("File validation failed: \(error.localizedDescription)")
             self.error = error.localizedDescription
             return
         }
@@ -48,9 +49,9 @@ class AudioProcessor: ObservableObject {
         
         do {
             // Load audio data
-            print("[AudioProcessor] Loading audio data...")
+            Logger.audioProcessor.debug("Loading audio data...")
             let audioData = try Data(contentsOf: file.url)
-            print("[AudioProcessor] Loaded \(audioData.count) bytes")
+            Logger.audioProcessor.info("Loaded \(audioData.count) bytes")
             
             // Update status to uploading
             job.updateProgress(0.1, status: .uploading)
@@ -62,31 +63,31 @@ class AudioProcessor: ObservableObject {
             self.currentJob = job
             
             // Call Modal API
-            print("[AudioProcessor] Calling Modal API...")
+            Logger.audioProcessor.info("Calling Modal API...")
             let result = try await modalService.processAudio(
                 audioData: audioData,
                 prompt: prompt,
                 mode: mode
             )
-            print("[AudioProcessor] Modal API returned result")
+            Logger.audioProcessor.info("Modal API returned result")
             
             // Update to downloading
             job.updateProgress(0.8, status: .downloading)
             self.currentJob = job
             
             // Download result
-            print("[AudioProcessor] Getting result file...")
+            Logger.audioProcessor.debug("Getting result file...")
             let localURL = try await downloadResult(from: result.outputURL)
-            print("[AudioProcessor] Result ready at: \(localURL)")
+            Logger.audioProcessor.info("Result ready at: \(localURL.lastPathComponent)")
             
             // Complete
             job.complete(outputURL: localURL)
             self.currentJob = job
             self.isProcessing = false
-            print("[AudioProcessor] Processing complete")
+            Logger.audioProcessor.info("Processing complete")
             
         } catch {
-            print("[AudioProcessor] Processing failed: \(error)")
+            Logger.audioProcessor.error("Processing failed: \(error.localizedDescription)")
             job.fail(error: makeUserFriendlyError(error))
             self.currentJob = job
             self.isProcessing = false
@@ -125,16 +126,16 @@ class AudioProcessor: ObservableObject {
     
     /// Download processed audio to local storage
     private func downloadResult(from url: URL) async throws -> URL {
-        print("[AudioProcessor] Download result from: \(url)")
+        Logger.audioProcessor.debug("Download result from: \(url.absoluteString)")
         
         // Check if URL is already a local file (from base64 decoding)
         if url.isFileURL {
-            print("[AudioProcessor] URL is already local file, no download needed")
+            Logger.audioProcessor.debug("URL is already local file, no download needed")
             return url
         }
         
         // Only download if it's a remote URL
-        print("[AudioProcessor] Downloading from remote URL...")
+        Logger.audioProcessor.debug("Downloading from remote URL...")
         
         // Create temporary file URL
         let tempDir = FileManager.default.temporaryDirectory
@@ -158,7 +159,7 @@ class AudioProcessor: ObservableObject {
         try? FileManager.default.removeItem(at: localURL) // Remove if exists
         try FileManager.default.moveItem(at: downloadedURL, to: localURL)
         
-        print("[AudioProcessor] Downloaded to: \(localURL)")
+        Logger.audioProcessor.info("Downloaded to: \(localURL.lastPathComponent)")
         return localURL
     }
     

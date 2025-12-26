@@ -323,7 +323,7 @@ struct TermsOfServiceView: View {
                     }
                     
                     Section("4. Content Rights") {
-                        Text("You retain all rights to your audio files. PureAudio does not claim ownership of your uploaded content. Files are processed temporarily and not permanently stored.")
+                        Text("You retain all rights to your audio files. AudioPure does not claim ownership of your uploaded content. Files are processed temporarily and not permanently stored.")
                     }
                     
                     Section("5. Service Availability") {

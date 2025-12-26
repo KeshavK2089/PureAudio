@@ -2,10 +2,11 @@
 //  ModalService.swift
 //  AudioPure
 //
-//  Service for communicating with Modal API
+//  Service for communicating with Modal API with rate limiting and retry logic
 //
 
 import Foundation
+import os.log
 
 /// Errors that can occur during Modal API communication
 enum ModalServiceError: LocalizedError {
@@ -14,7 +15,9 @@ enum ModalServiceError: LocalizedError {
     case processingFailed(String)
     case invalidResponse
     case timeout
+    case rateLimited
     case networkError(Error)
+    case maxRetriesExceeded
     
     var errorDescription: String? {
         switch self {
@@ -28,8 +31,12 @@ enum ModalServiceError: LocalizedError {
             return "Invalid response from server"
         case .timeout:
             return "Request timed out. Please try again."
+        case .rateLimited:
+            return "Server is busy. Please wait a moment and try again."
         case .networkError(let error):
             return "Network error: \(error.localizedDescription)"
+        case .maxRetriesExceeded:
+            return "Unable to connect after multiple attempts. Please try again later."
         }
     }
 }
@@ -40,18 +47,92 @@ struct ProcessingResult {
     let processingTime: TimeInterval?
 }
 
-/// Actor for thread-safe Modal API communication
+/// Actor for thread-safe Modal API communication with rate limiting
 actor ModalService {
+    
+    // MARK: - Rate Limiting Configuration
+    
+    private static let maxRetries = 3
+    private static let baseDelaySeconds: Double = 2.0
+    private static let maxDelaySeconds: Double = 30.0
+    private static let minRequestIntervalSeconds: Double = 1.0
+    
+    private var lastRequestTime: Date?
     
     // MARK: - Main Processing Method
     
-    /// Process audio file with Modal API
+    /// Process audio file with Modal API (with automatic retry)
     /// - Parameters:
     ///   - audioData: Raw audio file data
     ///   - prompt: Text description of sound to process
     ///   - mode: Processing mode (isolate or remove)
     /// - Returns: ProcessingResult with output URL
     func processAudio(
+        audioData: Data,
+        prompt: String,
+        mode: ProcessingMode
+    ) async throws -> ProcessingResult {
+        
+        // Enforce minimum request interval (rate limiting)
+        await enforceRateLimit()
+        
+        var lastError: Error?
+        
+        for attempt in 0..<Self.maxRetries {
+            do {
+                let result = try await performRequest(audioData: audioData, prompt: prompt, mode: mode)
+                return result
+            } catch let error as ModalServiceError {
+                lastError = error
+                
+                // Don't retry on certain errors
+                switch error {
+                case .invalidURL, .invalidResponse:
+                    throw error
+                case .rateLimited:
+                    // Longer delay for rate limiting
+                    let delay = Self.baseDelaySeconds * pow(2.0, Double(attempt + 1))
+                    Logger.modalService.warning("Rate limited, waiting \(delay)s before retry \(attempt + 1)/\(Self.maxRetries)")
+                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                default:
+                    // Exponential backoff for other errors
+                    if attempt < Self.maxRetries - 1 {
+                        let delay = min(Self.baseDelaySeconds * pow(2.0, Double(attempt)), Self.maxDelaySeconds)
+                        Logger.modalService.info("Request failed, retrying in \(delay)s (attempt \(attempt + 1)/\(Self.maxRetries))")
+                        try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    }
+                }
+            } catch {
+                lastError = error
+                if attempt < Self.maxRetries - 1 {
+                    let delay = min(Self.baseDelaySeconds * pow(2.0, Double(attempt)), Self.maxDelaySeconds)
+                    Logger.modalService.info("Request error, retrying in \(delay)s (attempt \(attempt + 1)/\(Self.maxRetries))")
+                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                }
+            }
+        }
+        
+        Logger.modalService.error("Max retries exceeded")
+        throw lastError ?? ModalServiceError.maxRetriesExceeded
+    }
+    
+    // MARK: - Rate Limiting
+    
+    private func enforceRateLimit() async {
+        if let lastRequest = lastRequestTime {
+            let elapsed = Date().timeIntervalSince(lastRequest)
+            if elapsed < Self.minRequestIntervalSeconds {
+                let waitTime = Self.minRequestIntervalSeconds - elapsed
+                Logger.modalService.debug("Rate limiting: waiting \(waitTime)s")
+                try? await Task.sleep(nanoseconds: UInt64(waitTime * 1_000_000_000))
+            }
+        }
+        lastRequestTime = Date()
+    }
+    
+    // MARK: - Request Execution
+    
+    private func performRequest(
         audioData: Data,
         prompt: String,
         mode: ProcessingMode
@@ -94,8 +175,15 @@ actor ModalService {
             throw ModalServiceError.invalidResponse
         }
         
+        // Handle rate limiting (429)
+        if httpResponse.statusCode == 429 {
+            Logger.modalService.warning("Received 429 Too Many Requests")
+            throw ModalServiceError.rateLimited
+        }
+        
         guard httpResponse.statusCode == 200 else {
             let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+            Logger.modalService.error("API error: Status \(httpResponse.statusCode)")
             throw ModalServiceError.processingFailed("Status \(httpResponse.statusCode): \(errorMessage)")
         }
         
@@ -103,6 +191,7 @@ actor ModalService {
         let result = try parseResponse(data: data)
         
         let processingTime = Date().timeIntervalSince(startTime)
+        Logger.modalService.info("Request completed in \(String(format: "%.1f", processingTime))s")
         return ProcessingResult(outputURL: result, processingTime: processingTime)
     }
     
@@ -110,39 +199,32 @@ actor ModalService {
     
     /// Parse response to extract output or decode base64 audio
     private func parseResponse(data: Data) throws -> URL {
-        // Log raw response for debugging
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("[ModalService] Raw response: \(responseString.prefix(200))...")
-        }
-        
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            print("[ModalService] Failed to parse JSON")
+            Logger.modalService.error("Failed to parse JSON response")
             throw ModalServiceError.invalidResponse
         }
         
-        print("[ModalService] Parsed JSON: \(json)")
-        
         // Check status
         if let status = json["status"] as? String {
-            print("[ModalService] Status: \(status)")
+            Logger.modalService.debug("Response status: \(status)")
             if status == "succeeded" {
                 // Get output (base64 audio from Modal)
                 if let output = json["output"] as? String {
-                    print("[ModalService] Found output, length: \(output.count)")
+                    Logger.modalService.debug("Output received, length: \(output.count)")
                     return try decodeBase64Audio(output)
                 } else {
-                    print("[ModalService] No 'output' field in response")
+                    Logger.modalService.error("No 'output' field in response")
                 }
             }
         }
         
         // Check for error
         if let error = json["error"] as? String {
-            print("[ModalService] Backend error: \(error)")
+            Logger.modalService.error("Backend error: \(error)")
             throw ModalServiceError.processingFailed(error)
         }
         
-        print("[ModalService] Invalid response structure")
+        Logger.modalService.error("Invalid response structure")
         throw ModalServiceError.invalidResponse
     }
     
