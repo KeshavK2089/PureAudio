@@ -429,20 +429,9 @@ struct PremiumSubscriptionCard: View {
                     .foregroundColor(.white.opacity(0.6))
             }
             
-            // Trial info
-            if let trial = product.subscription?.introductoryOffer {
-                Text("Start with \(trial.period.value) \(trial.period.unit.localizedDescription) free")
-                    .font(.caption)
-                    .foregroundColor(.green)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(.green.opacity(0.2))
-                    .cornerRadius(8)
-            }
-            
             // Subscribe button
             Button(action: onPurchase) {
-                Text(isPopular ? "Start Free Trial" : "Subscribe")
+                Text("Subscribe")
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
