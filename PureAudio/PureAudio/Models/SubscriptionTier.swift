@@ -96,9 +96,9 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     var price: String {
         switch self {
         case .free: return "Free"
-        case .basic: return "$10/mo"
-        case .pro: return "$30/mo"
-        case .professional: return "$60/mo"
+        case .basic: return "$9.99/mo"
+        case .pro: return "$29.99/mo"
+        case .professional: return "$59.99/mo"
         }
     }
     
