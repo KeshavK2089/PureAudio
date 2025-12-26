@@ -1,6 +1,6 @@
 //
-//  PureAudioApp.swift
-//  PureAudio
+//  AudioPureApp.swift
+//  AudioPure
 //
 //  App entry point
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct PureAudioApp: App {
+struct AudioPureApp: App {
     @StateObject private var viewModel = MainViewModel()
     
     var body: some Scene {

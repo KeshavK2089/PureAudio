@@ -1,6 +1,6 @@
 //
 //  OnboardingView.swift
-//  PureAudio
+//  AudioPure
 //
 //  First-time user onboarding screen
 //
@@ -27,7 +27,7 @@ struct OnboardingView: View {
                 
                 // Title
                 VStack(spacing: 8) {
-                    Text("Welcome to PureAudio")
+                    Text("Welcome to AudioPure")
                         .font(.system(size: 36, weight: .bold))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)

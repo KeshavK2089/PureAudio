@@ -1,6 +1,6 @@
 //
 //  ProcessingJob.swift
-//  PureAudio
+//  AudioPure
 //
 //  Model tracking the state of an audio processing job
 //
@@ -93,7 +93,7 @@ struct ProcessingJob: Identifiable {
         guard status.isInProgress else { return "—" }
         
         // Rough estimate based on progress
-        let totalEstimatedTime: TimeInterval = 60 // 60 seconds average
+        let _ = 60 as TimeInterval // Average estimate (not used directly)
         let elapsed = processingTimeSeconds ?? 0
         
         if progress > 0 {

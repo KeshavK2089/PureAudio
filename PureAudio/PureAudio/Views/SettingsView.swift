@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  PureAudio
+//  AudioPure
 //
 //  About, Help, Terms, and Privacy screen
 //
@@ -11,6 +11,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingTerms = false
     @State private var showingPrivacy = false
+    @State private var showingSubscription = false
     
     var body: some View {
         NavigationStack {
@@ -18,7 +19,7 @@ struct SettingsView: View {
                 // How to Use
                 SwiftUI.Section {
                     NavigationLink(destination: HowToUseView()) {
-                        Label("How to Use PureAudio", systemImage: "questionmark.circle.fill")
+                        Label("How to Use AudioPure", systemImage: "questionmark.circle.fill")
                             .foregroundColor(.primaryPurple)
                     }
                 } header: {
@@ -42,25 +43,52 @@ struct SettingsView: View {
                     Text("Technology")
                 }
                 
-                // Admin Code Entry
+                // Subscription Management
                 SwiftUI.Section {
-                    NavigationLink {
-                        RedeemCodeView()
+                    Button {
+                        showingSubscription = true
                     } label: {
                         HStack {
-                            Image(systemName: "key.fill")
+                            Image(systemName: SubscriptionManager.shared.currentTier.iconName)
                                 .foregroundColor(.primaryPurple)
-                            Text("Redeem Access Code")
-                            Spacer()
-                            if SubscriptionManager.shared.hasVIPAccess {
-                                Text("VIP Active")
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(SubscriptionManager.shared.currentTier.displayName)
+                                    .foregroundColor(.primary)
+                                Text(SubscriptionManager.shared.getUsageDescription())
                                     .font(.caption)
-                                    .foregroundColor(.accentPink)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if SubscriptionManager.shared.isSubscribed {
+                                Text("Active")
+                                    .font(.caption)
+                                    .foregroundColor(.successGreen)
+                            } else {
+                                Text("Upgrade")
+                                    .font(.caption.bold())
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color.primaryPurple)
+                                    .cornerRadius(8)
                             }
                         }
                     }
+                    
+                    Button {
+                        Task {
+                            await StoreKitManager.shared.restorePurchases()
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.primaryPurple)
+                            Text("Restore Purchases")
+                                .foregroundColor(.primary)
+                        }
+                    }
                 } header: {
-                    Text("Access")
+                    Text("Subscription")
                 }
                 
                 // Legal
@@ -107,7 +135,7 @@ struct SettingsView: View {
                 } header: {
                     Text("App Information")
                 } footer: {
-                    Text("© 2025 PureAudio. All rights reserved.")
+                    Text("© 2025 AudioPure. All rights reserved.")
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 16)
@@ -129,6 +157,9 @@ struct SettingsView: View {
             .sheet(isPresented: $showingPrivacy) {
                 PrivacyPolicyView()
             }
+            .sheet(isPresented: $showingSubscription) {
+                SubscriptionView()
+            }
         }
     }
 }
@@ -139,7 +170,7 @@ struct HowToUseView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("How to Use PureAudio")
+                Text("How to Use AudioPure")
                     .font(.title.bold())
                     .padding(.bottom, 8)
                 
@@ -273,11 +304,11 @@ struct TermsOfServiceView: View {
                     Divider()
                     
                     Section("1. Acceptance of Terms") {
-                        Text("By using PureAudio, you agree to these Terms of Service. If you do not agree, please do not use the app.")
+                        Text("By using AudioPure, you agree to these Terms of Service. If you do not agree, please do not use the app.")
                     }
                     
                     Section("2. Description of Service") {
-                        Text("PureAudio provides AI-powered audio processing to isolate or remove specific sounds from audio and video files using Meta's SAM Audio technology.")
+                        Text("AudioPure provides AI-powered audio processing to isolate or remove specific sounds from audio and video files using Meta's SAM Audio technology.")
                     }
                     
                     Section("3. Use of Service") {
@@ -296,11 +327,11 @@ struct TermsOfServiceView: View {
                     }
                     
                     Section("5. Service Availability") {
-                        Text("We strive to keep PureAudio available 24/7 but do not guarantee uninterrupted access. The service may be unavailable during maintenance or due to technical issues.")
+                        Text("We strive to keep AudioPure available 24/7 but do not guarantee uninterrupted access. The service may be unavailable during maintenance or due to technical issues.")
                     }
                     
                     Section("6. Limitation of Liability") {
-                        Text("PureAudio is provided 'as is' without warranties. We are not liable for any damages arising from use of the service, including but not limited to data loss or processing errors.")
+                        Text("AudioPure is provided 'as is' without warranties. We are not liable for any damages arising from use of the service, including but not limited to data loss or processing errors.")
                     }
                     
                     Section("7. Changes to Terms") {
@@ -393,7 +424,7 @@ struct PrivacyPolicyView: View {
                     }
                     
                     Section("7. Children's Privacy") {
-                        Text("PureAudio is not intended for children under 13. We do not knowingly collect information from children.")
+                        Text("AudioPure is not intended for children under 13. We do not knowingly collect information from children.")
                     }
                     
                     Section("8. Your Rights") {

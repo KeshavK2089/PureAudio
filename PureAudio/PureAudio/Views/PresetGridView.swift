@@ -1,6 +1,6 @@
 //
 //  PresetGridView.swift
-//  PureAudio
+//  AudioPure
 //
 //  Quick preset grid for easy audio processing
 //

@@ -1,8 +1,14 @@
 //
 //  AudioPreset.swift
-//  PureAudio
+//  AudioPure
 //
-//  Quick preset configurations for common audio processing tasks
+//  Presets optimized for SAM Audio natural language prompting
+//
+//  Citation:
+//  SAM-Audio: Segment Anything in Audio
+//  Bowen Shi et al., 2025
+//  https://arxiv.org/abs/2512.18099
+//  https://github.com/facebookresearch/sam-audio
 //
 
 import Foundation
@@ -28,98 +34,64 @@ struct AudioPreset: Identifiable {
 
 extension AudioPreset {
     
-    /// All available quick presets optimized for best results
+    /// Presets with natural language prompts optimized for SAM Audio
+    /// SAM Audio works best with descriptive phrases like "A person speaking"
     static let all: [AudioPreset] = [
-        // VOICE PRESETS
+        
+        // PRIMARY - Voice (most used by influencers)
         AudioPreset(
             icon: "person.wave.2.fill",
-            title: "Isolate Voice",
-            description: "Perfect for vlogs, podcasts, interviews",
+            title: "Clean My Voice",
+            description: "Isolate your voice, remove background",
             mode: .isolate,
-            prompt: "speech and vocals",
+            prompt: "A person speaking",
             category: .voice
         ),
         
+        // NOISE REMOVAL
         AudioPreset(
-            icon: "mic.fill",
-            title: "Remove Voice",
-            description: "Remove dialogue, keep background",
+            icon: "waveform.badge.minus",
+            title: "Remove All Noise",
+            description: "Clean up unwanted sounds",
             mode: .remove,
-            prompt: "speech and vocals",
-            category: .voice
-        ),
-        
-        // NOISE REMOVAL PRESETS
-        AudioPreset(
-            icon: "wind",
-            title: "Remove Wind",
-            description: "Clean outdoor recordings",
-            mode: .remove,
-            prompt: "wind noise",
+            prompt: "Background noise and ambient sounds",
             category: .noise
         ),
         
         AudioPreset(
-            icon: "waveform.badge.minus",
-            title: "Remove Background Noise",
-            description: "Remove ambient noise and hum",
+            icon: "wind",
+            title: "Remove Wind",
+            description: "Fix outdoor recordings",
             mode: .remove,
-            prompt: "background noise and static",
+            prompt: "Wind noise",
             category: .noise
         ),
         
         AudioPreset(
             icon: "car.fill",
             title: "Remove Traffic",
-            description: "Remove car sounds and honking",
+            description: "Remove city sounds",
             mode: .remove,
-            prompt: "traffic and car noise",
+            prompt: "Traffic and car sounds",
             category: .noise
         ),
         
-        AudioPreset(
-            icon: "person.3.fill",
-            title: "Remove Crowd",
-            description: "Remove background chatter",
-            mode: .remove,
-            prompt: "crowd noise and chatter",
-            category: .noise
-        ),
-        
-        // MUSIC PRESETS
-        AudioPreset(
-            icon: "music.note",
-            title: "Isolate Music",
-            description: "Extract music, remove dialogue",
-            mode: .isolate,
-            prompt: "music and instruments",
-            category: .music
-        ),
-        
+        // MUSIC
         AudioPreset(
             icon: "music.note.slash",
             title: "Remove Music",
-            description: "Remove background music",
+            description: "Remove copyrighted music",
             mode: .remove,
-            prompt: "background music",
+            prompt: "Background music",
             category: .music
         ),
         
         AudioPreset(
-            icon: "guitars.fill",
-            title: "Isolate Guitar",
-            description: "Extract guitar from mix",
+            icon: "music.note",
+            title: "Keep Only Music",
+            description: "Remove speech, keep music",
             mode: .isolate,
-            prompt: "guitar",
-            category: .music
-        ),
-        
-        AudioPreset(
-            icon: "music.mic",
-            title: "Isolate Vocals",
-            description: "Extract singing vocals only",
-            mode: .isolate,
-            prompt: "singing vocals",
+            prompt: "Music and instruments",
             category: .music
         )
     ]

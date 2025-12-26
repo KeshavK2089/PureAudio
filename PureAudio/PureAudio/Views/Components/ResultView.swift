@@ -1,6 +1,6 @@
 //
 //  ResultView.swift
-//  PureAudio
+//  AudioPure
 //
 //  Result display with playback and sharing
 //

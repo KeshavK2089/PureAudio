@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D9EE73432EFB60000057CC48 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9EE73422EFB60000057CC48 /* StoreKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		D99A317B2EF4A9C200649F65 /* PureAudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PureAudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9EE73422EFB60000057CC48 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9EE73432EFB60000057CC48 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				D99A317D2EF4A9C200649F65 /* PureAudio */,
+				D9EE73412EFB60000057CC48 /* Frameworks */,
 				D99A317C2EF4A9C200649F65 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +63,14 @@
 				D99A317B2EF4A9C200649F65 /* PureAudio.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D9EE73412EFB60000057CC48 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D9EE73422EFB60000057CC48 /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -272,9 +287,9 @@
 				INFOPLIST_FILE = PureAudio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "PureAudio needs microphone access to record audio for processing";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "PureAudio needs access to save processed audio files to your library";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "PureAudio needs access to import your audio and video files for processing";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "AudioPure needs microphone access to record audio for processing";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "AudioPure needs access to save processed audio files to your library";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "AudioPure needs access to import your audio and video files for processing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -282,6 +297,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -312,9 +328,9 @@
 				INFOPLIST_FILE = PureAudio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "PureAudio needs microphone access to record audio for processing";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "PureAudio needs access to save processed audio files to your library";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "PureAudio needs access to import your audio and video files for processing";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "AudioPure needs microphone access to record audio for processing";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "AudioPure needs access to save processed audio files to your library";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "AudioPure needs access to import your audio and video files for processing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -322,6 +338,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

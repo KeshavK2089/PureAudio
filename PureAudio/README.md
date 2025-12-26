@@ -1,4 +1,4 @@
-# PureAudio iOS App - Setup Guide
+# AudioPure iOS App - Setup Guide
 
 ## 📱 What You Have
 
@@ -23,7 +23,7 @@ A complete, production-ready iOS app for audio processing using Meta SAM Audio A
 2. Select **File → New → Project**
 3. Choose **iOS → App**
 4. Set:
-   - **Product Name**: `PureAudio`
+   - **Product Name**: `AudioPure`
    - **Team**: Select your team (NBVF93876Q)
    - **Organization Identifier**: `com.yourcompany` (or use your own)
    - **Interface**: SwiftUI
@@ -35,8 +35,8 @@ A complete, production-ready iOS app for audio processing using Meta SAM Audio A
 
 After creating the project, **replace the default files** with the ones I've created:
 
-1. Delete the default `ContentView.swift` and `PureAudioApp.swift` from Xcode
-2. In Finder, copy all files from `/Users/keshavkotteswaran/Desktop/PureAudio/PureAudio/` 
+1. Delete the default `ContentView.swift` and `AudioPureApp.swift` from Xcode
+2. In Finder, copy all files from `/Users/keshavkotteswaran/Desktop/AudioPure/AudioPure/` 
 3. Drag them into your Xcode project, maintaining the folder structure:
    - App/
    - Models/
@@ -45,7 +45,7 @@ After creating the project, **replace the default files** with the ones I've cre
    - Views/
    - Extensions/
 
-4. Replace `Info.plist` with the one at `/Users/keshavkotteswaran/Desktop/PureAudio/Info.plist`
+4. Replace `Info.plist` with the one at `/Users/keshavkotteswaran/Desktop/AudioPure/Info.plist`
 
 ### 3. Add App Icon
 
@@ -121,9 +121,9 @@ If your Modal API expects a different format, adjust `ModalService.swift`.
 ## 📁 Project Structure
 
 ```
-PureAudio/
+AudioPure/
 ├── App/
-│   ├── PureAudioApp.swift          # App entry point
+│   ├── AudioPureApp.swift          # App entry point
 │   └── Config.swift                # Configuration constants
 ├── Models/
 │   ├── AudioFile.swift             # Audio file model
@@ -242,4 +242,4 @@ If you encounter issues:
 
 **You're all set!** 🎉
 
-Your PureAudio iOS app is ready to build and test. Just open it in Xcode and run!
+Your AudioPure iOS app is ready to build and test. Just open it in Xcode and run!

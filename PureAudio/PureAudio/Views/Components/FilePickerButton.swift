@@ -1,6 +1,6 @@
 //
 //  FilePickerButton.swift
-//  PureAudio
+//  AudioPure
 //
 //  Reusable file picker button component
 //

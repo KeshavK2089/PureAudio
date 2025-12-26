@@ -1,6 +1,6 @@
 //
 //  MainViewModel.swift
-//  PureAudio
+//  AudioPure
 //
 //  Main view model for app state management
 //
@@ -24,6 +24,7 @@ class MainViewModel: ObservableObject {
     @Published var showingOnboarding = false
     @Published var showingResult = false
     @Published var showingShareSheet = false
+    @Published var showingSubscription = false
     
     // Processing state
     private let audioProcessor = AudioProcessor()
@@ -180,13 +181,17 @@ class MainViewModel: ObservableObject {
     
     /// Start processing the selected file
     func startProcessing() async {
-        // Reset daily limit if needed
-        subscriptionManager.resetDailyLimitIfNeeded()
+        // Reset monthly limit if needed
+        subscriptionManager.resetMonthlyLimitIfNeeded()
         
-        // Check usage limits
+        // Check usage limits - show paywall if limit exceeded
         let usageCheck = subscriptionManager.canProcess()
         guard usageCheck.allowed else {
-            error = usageCheck.reason
+            if subscriptionManager.needsSubscription {
+                showingSubscription = true
+            } else {
+                error = usageCheck.reason
+            }
             return
         }
         

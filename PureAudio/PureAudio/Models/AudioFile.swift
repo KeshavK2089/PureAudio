@@ -1,6 +1,6 @@
 //
 //  AudioFile.swift
-//  PureAudio
+//  AudioPure
 //
 //  Model representing an audio or video file
 //

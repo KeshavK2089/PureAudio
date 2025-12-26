@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  PureAudio
+//  AudioPure
 //
 //  Main app screen with all states
 //
@@ -55,7 +55,7 @@ struct ContentView: View {
                         .padding(.vertical, 24)
                     }
                 }
-                .navigationTitle(viewModel.selectedFile == nil ? "PureAudio" : "")
+                .navigationTitle(viewModel.selectedFile == nil ? "AudioPure" : "")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -95,6 +95,9 @@ struct ContentView: View {
                     if let url = viewModel.resultURL {
                         ShareSheet(items: [url])
                     }
+                }
+                .sheet(isPresented: $viewModel.showingSubscription) {
+                    SubscriptionView()
                 }
             }
             .opacity(viewModel.isProcessing ? 0 : 1)
@@ -144,7 +147,7 @@ struct ContentView: View {
                     .font(.system(size: 60))
                     .foregroundColor(.primaryPurple)
                 
-                Text("PureAudio")
+                Text("AudioPure")
                     .font(.system(size: 42, weight: .bold))
                     .foregroundColor(.primary)
                 

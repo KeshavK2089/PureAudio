@@ -1,6 +1,6 @@
 //
 //  SubscriptionBadge.swift
-//  PureAudio
+//  AudioPure
 //
 //  Compact subscription tier badge
 //
@@ -15,13 +15,8 @@ struct SubscriptionBadge: View {
             Image(systemName: manager.currentTier.iconName)
                 .font(.caption2)
             
-            if manager.hasVIPAccess {
-                Text("VIP")
-                    .font(.caption2.weight(.bold))
-            } else {
-                Text(manager.currentTier.displayName)
-                    .font(.caption2.weight(.semibold))
-            }
+            Text(manager.currentTier.displayName)
+                .font(.caption2.weight(.semibold))
         }
         .foregroundColor(.white)
         .padding(.horizontal, 10)
@@ -31,14 +26,6 @@ struct SubscriptionBadge: View {
     }
     
     private var badgeGradient: LinearGradient {
-        if manager.hasVIPAccess {
-            return LinearGradient(
-                colors: [Color(red: 1.0, green: 0.84, blue: 0.0), Color(red: 1.0, green: 0.65, blue: 0.0)],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-        }
-        
         switch manager.currentTier {
         case .free:
             return LinearGradient(colors: [.gray, .gray.opacity(0.8)], startPoint: .leading, endPoint: .trailing)
@@ -48,12 +35,6 @@ struct SubscriptionBadge: View {
             return LinearGradient(colors: [.primaryPurple, .accentPink], startPoint: .leading, endPoint: .trailing)
         case .professional:
             return LinearGradient(colors: [.accentPink, .primaryPurple], startPoint: .leading, endPoint: .trailing)
-        case .vip:
-            return LinearGradient(
-                colors: [Color(red: 1.0, green: 0.84, blue: 0.0), Color(red: 1.0, green: 0.65, blue: 0.0)],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
         }
     }
 }

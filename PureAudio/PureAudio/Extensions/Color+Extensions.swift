@@ -1,6 +1,6 @@
 //
 //  Color+Extensions.swift
-//  PureAudio
+//  AudioPure
 //
 //  Custom color palette for the app
 //

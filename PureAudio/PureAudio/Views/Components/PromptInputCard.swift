@@ -1,6 +1,6 @@
 //
 //  PromptInputCard.swift
-//  PureAudio
+//  AudioPure
 //
 //  Reusable prompt input component with suggestions
 //

@@ -1,5 +1,5 @@
 // ============================================
-// PureAudio - Landing Page Interactive Scripts
+// AudioPure - Landing Page Interactive Scripts
 // ============================================
 
 // Smooth scroll animation on page load

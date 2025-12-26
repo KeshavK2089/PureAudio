@@ -1,6 +1,6 @@
 //
 //  AudioProcessor.swift
-//  PureAudio
+//  AudioPure
 //
 //  Orchestrates the audio processing workflow
 //

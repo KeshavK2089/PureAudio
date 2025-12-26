@@ -1,6 +1,6 @@
 //
 //  DocumentPicker.swift
-//  PureAudio
+//  AudioPure
 //
 //  UIDocumentPickerViewController wrapper for Files app
 //

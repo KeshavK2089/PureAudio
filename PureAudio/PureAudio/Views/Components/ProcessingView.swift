@@ -1,6 +1,6 @@
 //
 //  ProcessingView.swift
-//  PureAudio
+//  AudioPure
 //
 //  INVESTOR-READY Processing display
 //
@@ -43,6 +43,12 @@ struct ProcessingView: View {
                     Text("AI is analyzing your audio...")
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.8))
+                    
+                    // Immediate wait time message
+                    Text("This may take 5-6 minutes")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.6))
+                        .padding(.top, 4)
                 }
                 
                 // Time info (optional - can remove if too technical)
@@ -53,21 +59,16 @@ struct ProcessingView: View {
                         .monospacedDigit()
                 }
                 
-                // First-time help (after 60 seconds)
-                if job.status == .processing && (job.processingTimeSeconds ?? 0) > 60 {
+                // Help message (after 45 seconds)
+                if job.status == .processing && (job.processingTimeSeconds ?? 0) > 45 {
                     VStack(spacing: 8) {
                         HStack(spacing: 6) {
-                            Image(systemName: "info.circle.fill")
+                            Image(systemName: "hourglass")
                                 .font(.caption)
-                            Text("First request takes longer")
+                            Text("Please wait for completion")
                                 .font(.caption.weight(.medium))
                         }
                         .foregroundColor(.white)
-                        
-                        Text("The AI needs to warm up. This typically takes 60-120 seconds.\nSubsequent requests will be faster (~30 seconds).")
-                            .font(.caption2)
-                            .foregroundColor(.white.opacity(0.8))
-                            .multilineTextAlignment(.center)
                     }
                     .padding()
                     .background(Color.white.opacity(0.15))

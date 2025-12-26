@@ -1,6 +1,6 @@
 //
 //  Config.swift
-//  PureAudio
+//  AudioPure
 //
 //  Configuration and constants for the PureAudio app
 //
@@ -8,7 +8,8 @@
 import Foundation
 
 /// Central configuration for the PureAudio app
-struct Config {
+/// Note: All static properties are nonisolated for actor compatibility
+struct Config: Sendable {
     // MARK: - Modal API Configuration
     
     /// Base URL for Modal API endpoint

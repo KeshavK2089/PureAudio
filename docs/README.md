@@ -1,10 +1,10 @@
-# PureAudio Landing Page
+# AudioPure Landing Page
 
-Professional landing page for PureAudio - AI-powered audio editing app.
+Professional landing page for AudioPure - AI-powered audio editing app.
 
 ## 🌐 Live Website
 
-Visit: [https://yourusername.github.io/PureAudio](https://yourusername.github.io/PureAudio)
+Visit: [https://yourusername.github.io/AudioPure](https://yourusername.github.io/AudioPure)
 
 ## 🚀 Quick Start
 
@@ -45,12 +45,12 @@ git push origin main
    - Folder: `/docs`
 4. Click **Save**
 
-Your site will be live at: `https://yourusername.github.io/PureAudio`
+Your site will be live at: `https://yourusername.github.io/AudioPure`
 
 ## 🎨 Features
 
 - **Premium Design**: YC-worthy professional landing page
-- **Purple Theme**: Matches the PureAudio iOS app aesthetic
+- **Purple Theme**: Matches the AudioPure iOS app aesthetic
 - **Responsive**: Perfect on all devices
 - **Animated**: Smooth scroll animations and micro-interactions
 - **Fast**: Optimized for performance
@@ -115,7 +115,7 @@ Edit CSS variables in `styles.css`:
 
 ## 📄 License
 
-All rights reserved © 2024 PureAudio
+All rights reserved © 2024 AudioPure
 
 ## 🙋‍♂️ Support
 

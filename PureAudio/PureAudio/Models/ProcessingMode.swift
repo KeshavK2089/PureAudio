@@ -1,6 +1,6 @@
 //
 //  ProcessingMode.swift
-//  PureAudio
+//  AudioPure
 //
 //  Enum defining audio processing operations
 //

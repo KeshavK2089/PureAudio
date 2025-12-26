@@ -1,6 +1,6 @@
 //
 //  SubscriptionTier.swift
-//  PureAudio
+//  AudioPure
 //
 //  Professional subscription tier management
 //
@@ -9,10 +9,9 @@ import Foundation
 
 enum SubscriptionTier: String, Codable, CaseIterable {
     case free = "free"
-    case basic = "com.pureaudio.basic.monthly"
-    case pro = "com.pureaudio.pro.monthly"
-    case professional = "com.pureaudio.professional.monthly"
-    case vip = "vip_access"  // Admin code access
+    case basic = "com.pureaudio.basic"
+    case pro = "com.pureaudio.pro"
+    case professional = "com.pureaudio.unlimited"
     
     // MARK: - Tier Configuration
     
@@ -21,28 +20,25 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         case .free: return "Free"
         case .basic: return "Basic"
         case .pro: return "Pro"
-        case .professional: return "Professional"
-        case .vip: return "VIP Access"
+        case .professional: return "Unlimited"
         }
     }
     
     var dailyLimit: Int {
         switch self {
-        case .free: return 1
-        case .basic: return 3  // ~10/month
-        case .pro: return 10   // ~30/month
-        case .professional: return 20  // ~60/month
-        case .vip: return Int.max
+        case .free: return Int.max  // Not limited by daily, but by total
+        case .basic: return Int.max
+        case .pro: return Int.max
+        case .professional: return Int.max
         }
     }
     
     var monthlyLimit: Int {
         switch self {
-        case .free: return 30
-        case .basic: return 10
-        case .pro: return 30
-        case .professional: return 60
-        case .vip: return Int.max
+        case .free: return 2  // 2 total lifetime
+        case .basic: return 5
+        case .pro: return 20
+        case .professional: return 50
         }
     }
     
@@ -51,8 +47,7 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         case .free: return 15
         case .basic: return 30
         case .pro: return 60
-        case .professional: return 90
-        case .vip: return 120
+        case .professional: return 120
         }
     }
     
@@ -69,17 +64,15 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         case .basic: return 1
         case .pro: return 2
         case .professional: return 3
-        case .vip: return 99
         }
     }
     
     var price: String {
         switch self {
         case .free: return "Free"
-        case .basic: return "$19.99/month"
-        case .pro: return "$59.99/month"
-        case .professional: return "$119.99/month"
-        case .vip: return "VIP Access"
+        case .basic: return "$9.99/month"
+        case .pro: return "$29.99/month"
+        case .professional: return "$59.99/month"
         }
     }
     
@@ -87,42 +80,31 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         switch self {
         case .free:
             return [
-                "1 process per day",
+                "2 processes total",
                 "15-second audio max",
                 "PureAudio watermark",
                 "Standard queue"
             ]
         case .basic:
             return [
-                "10 processes per month",
+                "5 processes per month",
                 "30-second audio max",
                 "No watermark",
                 "Priority processing"
             ]
         case .pro:
             return [
-                "30 processes per month",
+                "20 processes per month",
                 "60-second audio max",
                 "No watermark",
-                "Priority processing",
-                "Batch upload (5 files)"
+                "Priority processing"
             ]
         case .professional:
             return [
-                "60 processes per month",
-                "90-second audio max",
+                "50 processes per month",
+                "2-minute audio max",
                 "No watermark",
-                "Top priority processing",
-                "Batch upload (unlimited)",
-                "Email support"
-            ]
-        case .vip:
-            return [
-                "Unlimited processes",
-                "120-second audio max",
-                "No watermark",
-                "VIP priority",
-                "No restrictions"
+                "VIP priority processing"
             ]
         }
     }
@@ -133,7 +115,6 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         case .basic: return "blue"
         case .pro: return "purple"
         case .professional: return "pink"
-        case .vip: return "gold"
         }
     }
     
@@ -143,7 +124,6 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         case .basic: return "star.fill"
         case .pro: return "crown"
         case .professional: return "crown.fill"
-        case .vip: return "sparkles"
         }
     }
 }

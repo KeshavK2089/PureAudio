@@ -1,6 +1,6 @@
 //
 //  View+Extensions.swift
-//  PureAudio
+//  AudioPure
 //
 //  Reusable view modifiers and extensions
 //

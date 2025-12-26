@@ -1,6 +1,6 @@
 //
 //  ModalService.swift
-//  PureAudio
+//  AudioPure
 //
 //  Service for communicating with Modal API
 //
@@ -57,8 +57,11 @@ actor ModalService {
         mode: ProcessingMode
     ) async throws -> ProcessingResult {
         
+        // Capture config value outside actor context to avoid isolation issues
+        let apiBase = Config.modalAPIBase
+        
         // Build request URL (Modal API is at root /)
-        guard let url = URL(string: Config.modalAPIBase + "/") else {
+        guard let url = URL(string: apiBase + "/") else {
             throw ModalServiceError.invalidURL
         }
         
@@ -79,7 +82,7 @@ actor ModalService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = Config.uploadTimeoutSeconds
+        request.timeoutInterval = await Config.uploadTimeoutSeconds
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
         
         // Perform request
