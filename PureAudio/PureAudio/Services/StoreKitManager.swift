@@ -9,17 +9,12 @@ import Foundation
 import StoreKit
 internal import Combine
 
-/// Product identifiers for subscriptions
+/// Product identifiers for subscriptions (Monthly only)
 enum ProductID: String, CaseIterable {
-    // Monthly subscriptions
+    // Monthly subscriptions only
     case basicMonthly = "com.pureaudio.basic.monthly"
     case proMonthly = "com.pureaudio.pro.monthly"
     case unlimitedMonthly = "com.pureaudio.unlimited.monthly"
-    
-    // Annual subscriptions
-    case basicYearly = "com.pureaudio.basic.yearly"
-    case proYearly = "com.pureaudio.pro.yearly"
-    case unlimitedYearly = "com.pureaudio.unlimited.yearly"
     
     static var allProductIDs: [String] {
         allCases.map { $0.rawValue }
@@ -27,9 +22,9 @@ enum ProductID: String, CaseIterable {
     
     var tier: SubscriptionTier {
         switch self {
-        case .basicMonthly, .basicYearly: return .basic
-        case .proMonthly, .proYearly: return .pro
-        case .unlimitedMonthly, .unlimitedYearly: return .professional
+        case .basicMonthly: return .basic
+        case .proMonthly: return .pro
+        case .unlimitedMonthly: return .professional
         }
     }
 }
@@ -51,17 +46,14 @@ class StoreKitManager: ObservableObject {
     }
     
     var currentSubscriptionTier: SubscriptionTier {
-        // Check from highest to lowest tier
-        if purchasedProductIDs.contains(ProductID.unlimitedMonthly.rawValue) ||
-           purchasedProductIDs.contains(ProductID.unlimitedYearly.rawValue) {
+        // Check from highest to lowest tier (monthly only)
+        if purchasedProductIDs.contains(ProductID.unlimitedMonthly.rawValue) {
             return .professional
         }
-        if purchasedProductIDs.contains(ProductID.proMonthly.rawValue) ||
-           purchasedProductIDs.contains(ProductID.proYearly.rawValue) {
+        if purchasedProductIDs.contains(ProductID.proMonthly.rawValue) {
             return .pro
         }
-        if purchasedProductIDs.contains(ProductID.basicMonthly.rawValue) ||
-           purchasedProductIDs.contains(ProductID.basicYearly.rawValue) {
+        if purchasedProductIDs.contains(ProductID.basicMonthly.rawValue) {
             return .basic
         }
         return .free
@@ -218,12 +210,6 @@ class StoreKitManager: ObservableObject {
     func monthlyProducts() -> [Product] {
         products.filter {
             $0.id.contains("monthly")
-        }.sorted { $0.price < $1.price }
-    }
-    
-    func yearlyProducts() -> [Product] {
-        products.filter {
-            $0.id.contains("yearly")
         }.sorted { $0.price < $1.price }
     }
 }

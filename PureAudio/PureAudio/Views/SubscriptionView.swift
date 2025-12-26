@@ -188,7 +188,7 @@ struct SubscriptionView: View {
     }
     
     private var currentProducts: [Product] {
-        selectedPlan == .monthly ? storeKit.monthlyProducts() : storeKit.yearlyProducts()
+        storeKit.monthlyProducts()  // Monthly subscriptions only
     }
     
     // MARK: - Loading View
