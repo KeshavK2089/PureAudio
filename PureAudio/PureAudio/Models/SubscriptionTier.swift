@@ -47,10 +47,10 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     
     var monthlyLimit: Int {
         switch self {
-        case .free: return 2
-        case .basic: return 5
-        case .pro: return 20
-        case .professional: return 50
+        case .free: return 3
+        case .basic: return 10
+        case .pro: return 30
+        case .professional: return 999  // Effectively unlimited
         }
     }
     
@@ -96,9 +96,9 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     var price: String {
         switch self {
         case .free: return "Free"
-        case .basic: return "$9.99/mo"
-        case .pro: return "$29.99/mo"
-        case .professional: return "$59.99/mo"
+        case .basic: return "$4.99/mo"
+        case .pro: return "$9.99/mo"
+        case .professional: return "$19.99/mo"
         }
     }
     
@@ -106,30 +106,30 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         switch self {
         case .free:
             return [
-                "2 processes total",
+                "3 processes total",
                 "15-second audio max",
                 "Video output included",
                 "AudioPure watermark"
             ]
         case .basic:
             return [
-                "5 processes/month",
+                "10 processes/month",
                 "30-second audio max",
                 "Video output included",
                 "No watermark"
             ]
         case .pro:
             return [
-                "20 processes/month",
+                "30 processes/month",
                 "60-second audio max",
-                "TikTok/Instagram import",
+                "High Quality Mode",
                 "Priority processing"
             ]
         case .professional:
             return [
-                "50 processes/month",
+                "Unlimited processes",
                 "2-minute audio max",
-                "Tap-to-isolate video mode",
+                "High Quality Mode",
                 "VIP priority"
             ]
         }
