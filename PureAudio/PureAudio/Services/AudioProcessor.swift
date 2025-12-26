@@ -28,12 +28,12 @@ class AudioProcessor: ObservableObject {
         mode: ProcessingMode
     ) async {
         // Validate file
-        print("🎬 Starting processAudio for: \(file.filename)")
+        print("[AudioProcessor] Starting processAudio for: \(file.filename)")
         do {
             try validateFile(file)
-            print("✅ File validated")
+            print("[AudioProcessor] File validated")
         } catch {
-            print("❌ File validation failed: \(error)")
+            print("[AudioProcessor] File validation failed: \(error)")
             self.error = error.localizedDescription
             return
         }
@@ -48,9 +48,9 @@ class AudioProcessor: ObservableObject {
         
         do {
             // Load audio data
-            print("📂 Loading audio data...")
+            print("[AudioProcessor] Loading audio data...")
             let audioData = try Data(contentsOf: file.url)
-            print("✅ Loaded \(audioData.count) bytes")
+            print("[AudioProcessor] Loaded \(audioData.count) bytes")
             
             // Update status to uploading
             job.updateProgress(0.1, status: .uploading)
@@ -62,31 +62,31 @@ class AudioProcessor: ObservableObject {
             self.currentJob = job
             
             // Call Modal API
-            print("🚀 Calling Modal API...")
+            print("[AudioProcessor] Calling Modal API...")
             let result = try await modalService.processAudio(
                 audioData: audioData,
                 prompt: prompt,
                 mode: mode
             )
-            print("✅ Modal API returned result")
+            print("[AudioProcessor] Modal API returned result")
             
             // Update to downloading
             job.updateProgress(0.8, status: .downloading)
             self.currentJob = job
             
             // Download result
-            print("📥 Getting result file...")
+            print("[AudioProcessor] Getting result file...")
             let localURL = try await downloadResult(from: result.outputURL)
-            print("✅ Result ready at: \(localURL)")
+            print("[AudioProcessor] Result ready at: \(localURL)")
             
             // Complete
             job.complete(outputURL: localURL)
             self.currentJob = job
             self.isProcessing = false
-            print("🎉 Processing complete!")
+            print("[AudioProcessor] Processing complete")
             
         } catch {
-            print("❌ Processing failed: \(error)")
+            print("[AudioProcessor] Processing failed: \(error)")
             job.fail(error: makeUserFriendlyError(error))
             self.currentJob = job
             self.isProcessing = false
@@ -116,7 +116,7 @@ class AudioProcessor: ObservableObject {
     private func validateFile(_ file: AudioFile) throws {
         guard file.isValid else {
             throw NSError(
-                domain: "PureAudio",
+                domain: "AudioPure",
                 code: 1,
                 userInfo: [NSLocalizedDescriptionKey: file.validationError ?? "Invalid file"]
             )
@@ -125,16 +125,16 @@ class AudioProcessor: ObservableObject {
     
     /// Download processed audio to local storage
     private func downloadResult(from url: URL) async throws -> URL {
-        print("📥 Download result from: \(url)")
+        print("[AudioProcessor] Download result from: \(url)")
         
         // Check if URL is already a local file (from base64 decoding)
         if url.isFileURL {
-            print("✅ URL is already local file, no download needed")
+            print("[AudioProcessor] URL is already local file, no download needed")
             return url
         }
         
         // Only download if it's a remote URL
-        print("🌐 Downloading from remote URL...")
+        print("[AudioProcessor] Downloading from remote URL...")
         
         // Create temporary file URL
         let tempDir = FileManager.default.temporaryDirectory
@@ -148,7 +148,7 @@ class AudioProcessor: ObservableObject {
         guard let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200 else {
             throw NSError(
-                domain: "PureAudio",
+                domain: "AudioPure",
                 code: 2,
                 userInfo: [NSLocalizedDescriptionKey: "Failed to download processed audio"]
             )
@@ -158,7 +158,7 @@ class AudioProcessor: ObservableObject {
         try? FileManager.default.removeItem(at: localURL) // Remove if exists
         try FileManager.default.moveItem(at: downloadedURL, to: localURL)
         
-        print("✅ Downloaded to: \(localURL)")
+        print("[AudioProcessor] Downloaded to: \(localURL)")
         return localURL
     }
     

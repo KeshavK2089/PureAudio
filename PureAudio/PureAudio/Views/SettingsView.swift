@@ -219,7 +219,7 @@ struct HowToUseView: View {
                 
                 // Tips
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("💡 Pro Tips")
+                    Text("Pro Tips")
                         .font(.headline)
                     
                     TipRow(text: "Use short, specific prompts like 'guitar' or 'wind noise'")

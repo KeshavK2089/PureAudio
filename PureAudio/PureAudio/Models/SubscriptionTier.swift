@@ -37,9 +37,9 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     var accentColor: Color {
         switch self {
         case .free: return .secondary
-        case .basic: return .blue
-        case .pro: return .purple
-        case .professional: return .pink
+        case .basic: return .primaryBlue
+        case .pro: return .deepPurple
+        case .professional: return .indigo
         }
     }
     
@@ -78,15 +78,12 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     
     // MARK: - Premium Feature Flags
     
-    /// Can export video with processed audio (Basic+)
+    /// Video export with processed audio - FREE for all users (on-device AVFoundation, no backend cost)
     var canExportVideo: Bool {
-        switch self {
-        case .free: return false
-        case .basic, .pro, .professional: return true
-        }
+        return true  // Available to all tiers - no server cost
     }
     
-    /// Can extract audio from TikTok/Instagram URLs (Pro+)
+    /// Can extract audio from TikTok/Instagram URLs (Pro+) - requires backend
     var canExtractURL: Bool {
         switch self {
         case .free, .basic: return false
@@ -98,9 +95,6 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     var canTapToIsolate: Bool {
         self == .professional
     }
-    
-    /// Minimum tier required to unlock video export
-    static var videoExportMinTier: SubscriptionTier { .basic }
     
     /// Minimum tier required for URL extraction
     static var urlExtractMinTier: SubscriptionTier { .pro }
@@ -125,14 +119,14 @@ enum SubscriptionTier: String, Codable, CaseIterable {
             return [
                 "2 processes total",
                 "15-second audio max",
-                "MP3 output only",
+                "Video output included",
                 "AudioPure watermark"
             ]
         case .basic:
             return [
                 "5 processes/month",
                 "30-second audio max",
-                "Video output with audio",
+                "Video output included",
                 "No watermark"
             ]
         case .pro:

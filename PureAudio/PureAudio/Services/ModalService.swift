@@ -112,37 +112,37 @@ actor ModalService {
     private func parseResponse(data: Data) throws -> URL {
         // Log raw response for debugging
         if let responseString = String(data: data, encoding: .utf8) {
-            print("📥 Raw response: \(responseString.prefix(200))...")
+            print("[ModalService] Raw response: \(responseString.prefix(200))...")
         }
         
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            print("❌ Failed to parse JSON")
+            print("[ModalService] Failed to parse JSON")
             throw ModalServiceError.invalidResponse
         }
         
-        print("📦 Parsed JSON: \(json)")
+        print("[ModalService] Parsed JSON: \(json)")
         
         // Check status
         if let status = json["status"] as? String {
-            print("📊 Status: \(status)")
+            print("[ModalService] Status: \(status)")
             if status == "succeeded" {
                 // Get output (base64 audio from Modal)
                 if let output = json["output"] as? String {
-                    print("✅ Found output, length: \(output.count)")
+                    print("[ModalService] Found output, length: \(output.count)")
                     return try decodeBase64Audio(output)
                 } else {
-                    print("❌ No 'output' field in response")
+                    print("[ModalService] No 'output' field in response")
                 }
             }
         }
         
         // Check for error
         if let error = json["error"] as? String {
-            print("❌ Backend error: \(error)")
+            print("[ModalService] Backend error: \(error)")
             throw ModalServiceError.processingFailed(error)
         }
         
-        print("❌ Invalid response structure")
+        print("[ModalService] Invalid response structure")
         throw ModalServiceError.invalidResponse
     }
     
