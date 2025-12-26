@@ -12,16 +12,10 @@ struct SubscriptionView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject private var storeKit = StoreKitManager.shared
     
-    @State private var selectedPlan: PlanType = .monthly
     @State private var isPurchasing = false
     @State private var showingError = false
     @State private var errorMessage = ""
     @State private var animateGradient = false
-    
-    enum PlanType: String, CaseIterable {
-        case monthly = "Monthly"
-        case yearly = "Yearly"
-    }
     
     var body: some View {
         NavigationView {
@@ -33,9 +27,6 @@ struct SubscriptionView: View {
                     VStack(spacing: 28) {
                         // Premium Header
                         premiumHeaderSection
-                        
-                        // Plan toggle with premium styling
-                        premiumPlanToggle
                         
                         // Subscription options
                         if storeKit.isLoading {
@@ -134,43 +125,7 @@ struct SubscriptionView: View {
         .padding(.top, 20)
     }
     
-    // MARK: - Premium Plan Toggle
-    
-    private var premiumPlanToggle: some View {
-        HStack(spacing: 0) {
-            ForEach(PlanType.allCases, id: \.self) { plan in
-                Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedPlan = plan
-                    }
-                } label: {
-                    VStack(spacing: 4) {
-                        Text(plan.rawValue)
-                            .font(.headline)
-                        if plan == .yearly {
-                            Text("Save 25%")
-                                .font(.caption2)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.green)
-                        }
-                    }
-                    .foregroundColor(selectedPlan == plan ? .white : .white.opacity(0.6))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(
-                        selectedPlan == plan ?
-                        LinearGradient(colors: [.primaryPurple, .accentPink], startPoint: .leading, endPoint: .trailing) :
-                        LinearGradient(colors: [.clear, .clear], startPoint: .leading, endPoint: .trailing)
-                    )
-                    .cornerRadius(12)
-                }
-            }
-        }
-        .padding(4)
-        .background(.ultraThinMaterial)
-        .cornerRadius(16)
-        .padding(.horizontal)
-    }
+
     
     // MARK: - Premium Subscription Cards
     
@@ -273,9 +228,9 @@ struct SubscriptionView: View {
                 Divider().background(.white.opacity(0.2))
                 
                 // Feature rows
-                PremiumFeatureRow(feature: "Processes", free: "2", basic: "5", pro: "20", unlimited: "50")
+                PremiumFeatureRow(feature: "Processes", free: "3", basic: "10/mo", pro: "30/mo", unlimited: "∞")
                 PremiumFeatureRow(feature: "Max length", free: "15s", basic: "30s", pro: "60s", unlimited: "2min")
-                PremiumFeatureRow(feature: "Watermark", free: "Yes", basic: "No", pro: "No", unlimited: "No")
+                PremiumFeatureRow(feature: "High Quality", free: "—", basic: "—", pro: "✓", unlimited: "✓")
                 PremiumFeatureRow(feature: "Priority", free: "—", basic: "—", pro: "✓", unlimited: "VIP")
             }
             .padding()
@@ -549,17 +504,17 @@ struct PremiumSubscriptionCard: View {
     
     private var tierFeatures: [String] {
         if product.id.contains("basic") {
-            return ["5 audio processes/month", "Up to 30 second clips", "No watermark"]
+            return ["10 audio processes/month", "Up to 30 second clips", "No watermark"]
         } else if product.id.contains("pro") {
-            return ["20 audio processes/month", "Up to 60 second clips", "Priority processing"]
+            return ["30 audio processes/month", "High Quality Mode", "Priority processing"]
         } else if product.id.contains("unlimited") {
-            return ["50 audio processes/month", "Up to 2 minute clips", "VIP priority"]
+            return ["Unlimited audio processes", "High Quality Mode", "VIP priority"]
         }
         return []
     }
     
     private var periodText: String {
-        product.id.contains("yearly") ? "per year" : "per month"
+        "per month"
     }
 }
 
