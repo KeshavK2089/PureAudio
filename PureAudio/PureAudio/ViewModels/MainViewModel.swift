@@ -25,6 +25,7 @@ class MainViewModel: ObservableObject {
     @Published var showingResult = false
     @Published var showingShareSheet = false
     @Published var showingSubscription = false
+    @Published var highQualityMode = false  // Pro+ feature: quality re-ranking
     
     // Processing state
     private let audioProcessor = AudioProcessor()
@@ -40,6 +41,11 @@ class MainViewModel: ObservableObject {
     let subscriptionManager = SubscriptionManager.shared
     
     // MARK: - Computed Properties
+    
+    /// Whether high quality mode can be used (Pro+ tier)
+    var canUseHighQuality: Bool {
+        subscriptionManager.currentTier.priorityLevel >= 2  // Pro or Unlimited
+    }
     
     /// Whether the process button should be enabled
     var canProcess: Bool {

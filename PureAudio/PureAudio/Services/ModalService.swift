@@ -66,11 +66,13 @@ actor ModalService {
     ///   - audioData: Raw audio file data
     ///   - prompt: Text description of sound to process
     ///   - mode: Processing mode (isolate or remove)
+    ///   - highQualityMode: Enable re-ranking for Pro+ users (slower but better)
     /// - Returns: ProcessingResult with output URL
     func processAudio(
         audioData: Data,
         prompt: String,
-        mode: ProcessingMode
+        mode: ProcessingMode,
+        highQualityMode: Bool = false
     ) async throws -> ProcessingResult {
         
         // Enforce minimum request interval (rate limiting)
@@ -80,7 +82,7 @@ actor ModalService {
         
         for attempt in 0..<Self.maxRetries {
             do {
-                let result = try await performRequest(audioData: audioData, prompt: prompt, mode: mode)
+                let result = try await performRequest(audioData: audioData, prompt: prompt, mode: mode, highQualityMode: highQualityMode)
                 return result
             } catch let error as ModalServiceError {
                 lastError = error
@@ -135,7 +137,8 @@ actor ModalService {
     private func performRequest(
         audioData: Data,
         prompt: String,
-        mode: ProcessingMode
+        mode: ProcessingMode,
+        highQualityMode: Bool
     ) async throws -> ProcessingResult {
         
         // Capture config value outside actor context to avoid isolation issues
@@ -151,11 +154,15 @@ actor ModalService {
         let dataURL = "data:audio/wav;base64,\(base64Audio)"
         
         // Create JSON request matching Modal backend format
+        // predict_spans: Always true for better accuracy
+        // high_quality: Re-ranking mode for Pro+ users
         let requestBody: [String: Any] = [
             "input": [
                 "audio": dataURL,
                 "prompt": prompt,
-                "mode": mode.rawValue
+                "mode": mode.rawValue,
+                "predict_spans": true,
+                "high_quality": highQualityMode
             ]
         ]
         
