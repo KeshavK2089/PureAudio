@@ -2,7 +2,7 @@
 //  ResultView.swift
 //  AudioPure
 //
-//  Result display with playback and sharing - Apple-style design
+//  Result display with before/after comparison and sharing
 //
 
 import SwiftUI
@@ -14,19 +14,34 @@ struct ResultView: View {
     let onProcessAnother: () -> Void
     
     @State private var player: AVPlayer?
+    @State private var isPlayingOriginal = false  // A/B toggle
+    @State private var isPlaying = false
     
     private var isVideoOutput: Bool {
         job.outputURL?.pathExtension.lowercased() == "mp4"
     }
     
+    private var originalURL: URL? {
+        job.inputFile.url
+    }
+    
+    private var processedURL: URL? {
+        job.outputURL
+    }
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            VStack(spacing: 24) {
                 // Success header
                 successHeader
                 
+                // A/B Comparison Toggle
+                if !isVideoOutput {
+                    comparisonToggle
+                }
+                
                 // Media player
-                if let url = job.outputURL {
+                if let url = isPlayingOriginal ? originalURL : processedURL {
                     mediaPlayerSection(url: url)
                 }
                 
@@ -45,11 +60,11 @@ struct ResultView: View {
     private var successHeader: some View {
         VStack(spacing: 12) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundColor(.green)
+                .font(.system(size: 56))
+                .foregroundColor(.successGreen)
             
             Text("Done")
-                .font(.largeTitle)
+                .font(.title)
                 .fontWeight(.bold)
             
             if let time = job.processingTimeSeconds {
@@ -58,7 +73,72 @@ struct ResultView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .padding(.top, 20)
+        .padding(.top, 16)
+    }
+    
+    // MARK: - A/B Comparison Toggle
+    
+    private var comparisonToggle: some View {
+        HStack(spacing: 0) {
+            // Original
+            Button {
+                switchToOriginal()
+            } label: {
+                Text("Original")
+                    .font(.subheadline.weight(.medium))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .foregroundColor(isPlayingOriginal ? .white : .primary)
+                    .background(isPlayingOriginal ? Color.primaryBlue : Color.clear)
+            }
+            
+            // Processed
+            Button {
+                switchToProcessed()
+            } label: {
+                Text("Processed")
+                    .font(.subheadline.weight(.medium))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .foregroundColor(!isPlayingOriginal ? .white : .primary)
+                    .background(!isPlayingOriginal ? Color.primaryBlue : Color.clear)
+            }
+        }
+        .background(Color(.systemGray5))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .padding(.horizontal, 24)
+    }
+    
+    private func switchToOriginal() {
+        guard !isPlayingOriginal else { return }
+        let currentTime = player?.currentTime()
+        isPlayingOriginal = true
+        
+        if let url = originalURL {
+            player = AVPlayer(url: url)
+            if let time = currentTime {
+                player?.seek(to: time)
+            }
+            if isPlaying {
+                player?.play()
+            }
+        }
+    }
+    
+    private func switchToProcessed() {
+        guard isPlayingOriginal else { return }
+        let currentTime = player?.currentTime()
+        isPlayingOriginal = false
+        
+        if let url = processedURL {
+            player = AVPlayer(url: url)
+            if let time = currentTime {
+                player?.seek(to: time)
+            }
+            if isPlaying {
+                player?.play()
+            }
+        }
     }
     
     // MARK: - Media Player
@@ -81,24 +161,34 @@ struct ResultView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             } else {
-                // Audio player
-                VStack(spacing: 12) {
-                    Image(systemName: "waveform")
-                        .font(.system(size: 40))
-                        .foregroundColor(.accentColor)
+                // Audio player with controls
+                VStack(spacing: 16) {
+                    // Waveform icon
+                    Image(systemName: isPlayingOriginal ? "waveform" : "waveform.badge.magnifyingglass")
+                        .font(.system(size: 36))
+                        .foregroundColor(isPlayingOriginal ? .secondary : .primaryBlue)
                     
-                    if let player = player {
-                        VideoPlayer(player: player)
-                            .frame(height: 50)
-                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    // Label
+                    Text(isPlayingOriginal ? "Original Audio" : "Processed Audio")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    // Play/Pause button
+                    Button {
+                        togglePlayback()
+                    } label: {
+                        Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                            .font(.system(size: 56))
+                            .foregroundColor(.primaryBlue)
                     }
                 }
-                .padding()
+                .padding(24)
                 .frame(maxWidth: .infinity)
                 .background(Color(.systemGray6))
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .onAppear {
                     player = AVPlayer(url: url)
+                    setupPlaybackObserver()
                 }
                 .onDisappear {
                     player?.pause()
@@ -108,10 +198,32 @@ struct ResultView: View {
         .padding(.horizontal)
     }
     
+    private func togglePlayback() {
+        if isPlaying {
+            player?.pause()
+            isPlaying = false
+        } else {
+            player?.play()
+            isPlaying = true
+        }
+    }
+    
+    private func setupPlaybackObserver() {
+        // Reset isPlaying when audio ends
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: player?.currentItem,
+            queue: .main
+        ) { _ in
+            isPlaying = false
+            player?.seek(to: .zero)
+        }
+    }
+    
     // MARK: - Details Section
     
     private var detailsSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             HStack {
                 Label("Mode", systemImage: job.mode == .isolate ? "speaker.wave.2" : "speaker.slash")
                 Spacer()
@@ -156,7 +268,7 @@ struct ResultView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .foregroundColor(.white)
-                    .background(Color.accentColor)
+                    .background(Color.primaryBlue)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             
@@ -166,7 +278,7 @@ struct ResultView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.primaryBlue)
                     .background(Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
