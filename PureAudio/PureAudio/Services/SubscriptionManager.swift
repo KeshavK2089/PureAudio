@@ -35,6 +35,10 @@ class SubscriptionManager: ObservableObject {
     
     // MARK: - Initialization
     
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Initialization
+    
     private init() {
         loadState()
         observeStoreKit()
@@ -43,22 +47,40 @@ class SubscriptionManager: ObservableObject {
     // MARK: - State Management
     
     private func loadState() {
-        // Record first install date in Keychain (for potential time-based features)
+        // Record first install date in Keychain
         KeychainManager.shared.recordFirstInstallIfNeeded()
         
-        // Load free processes used from KEYCHAIN (persists across reinstalls!)
+        // Load free processes used from KEYCHAIN
         totalFreeProcessesUsed = KeychainManager.shared.freeProcessesUsed
         remainingProcesses = max(0, maxFreeProcesses - totalFreeProcessesUsed)
         
-        // Check StoreKit subscription status
+        // Initial check
         updateTierFromStoreKit()
+        
+        // Load saved remaining processes for subscribers
+        if let savedRemaining = UserDefaults.standard.object(forKey: processCountKey) as? Int, isSubscribed {
+            // Only use saved if we haven't switched tiers to something with fewer processes
+            if savedRemaining <= currentTier.monthlyLimit {
+                remainingProcesses = savedRemaining
+            }
+        }
     }
     
     private func observeStoreKit() {
-        // Observe StoreKit changes
+        // Observe StoreKitManager changes directly to fix race condition
+        StoreKitManager.shared.$purchasedProductIDs
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateTierFromStoreKit()
+            }
+            .store(in: &cancellables)
+            
+        // Also listen for direct Transaction updates as backup
         Task {
             for await _ in Transaction.updates {
-                updateTierFromStoreKit()
+                await MainActor.run {
+                    self.updateTierFromStoreKit()
+                }
             }
         }
     }
@@ -67,9 +89,20 @@ class SubscriptionManager: ObservableObject {
         let storeKit = StoreKitManager.shared
         
         if storeKit.hasActiveSubscription {
-            currentTier = storeKit.currentSubscriptionTier
-            isSubscribed = true
-            remainingProcesses = currentTier.monthlyLimit
+            let newTier = storeKit.currentSubscriptionTier
+            
+            // If tier changed, reset limits to that tier's max
+            if newTier != currentTier {
+                currentTier = newTier
+                isSubscribed = true
+                remainingProcesses = newTier.monthlyLimit
+                UserDefaults.standard.set(remainingProcesses, forKey: processCountKey)
+            } else {
+                // Tier is same, ensure subscribed state is accurate
+                isSubscribed = true
+                // DON'T reset remainingProcesses here - relies on persistence or resetMonthlyLimitIfNeeded
+            }
+            
             resetMonthlyLimitIfNeeded()
         } else {
             currentTier = .free
@@ -79,9 +112,13 @@ class SubscriptionManager: ObservableObject {
     }
     
     func updateTier(_ tier: SubscriptionTier) {
-        currentTier = tier
-        isSubscribed = (tier != .free)
-        remainingProcesses = tier.monthlyLimit
+        // Manual override (for testing or immediate local updates)
+        if tier != currentTier {
+            currentTier = tier
+            isSubscribed = (tier != .free)
+            remainingProcesses = tier.monthlyLimit
+            UserDefaults.standard.set(remainingProcesses, forKey: processCountKey)
+        }
     }
     
     // MARK: - Usage Tracking

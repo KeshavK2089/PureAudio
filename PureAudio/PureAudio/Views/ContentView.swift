@@ -112,8 +112,12 @@ struct ContentView: View {
             }
         }
         .onChange(of: selectedPhotoItem) { oldValue, newValue in
-            Task {
-                await viewModel.handleSelectedItem(newValue)
+            if let item = newValue {
+                Task {
+                    await viewModel.handleSelectedItem(item)
+                    // Reset selection so the same file can be picked again if needed
+                    selectedPhotoItem = nil
+                }
             }
         }
         .alert("Error", isPresented: $showingError) {

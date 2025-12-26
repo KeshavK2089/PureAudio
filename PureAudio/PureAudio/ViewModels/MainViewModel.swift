@@ -183,22 +183,9 @@ class MainViewModel: ObservableObject {
     }
     
     /// Construct smart prompt with mode prepended
+    /// Returns the user prompt cleaned up
     private func constructSmartPrompt() -> String {
-        let userPrompt = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // Only prepend if user hasn't already included the mode
-        let lowerPrompt = userPrompt.lowercased()
-        if lowerPrompt.hasPrefix("isolate ") || lowerPrompt.hasPrefix("remove ") {
-            return userPrompt
-        }
-        
-        // Prepend mode for better AI results
-        switch mode {
-        case .isolate:
-            return "isolate \(userPrompt)"
-        case .remove:
-            return "remove \(userPrompt)"
-        }
+        return prompt.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
     // MARK: - Processing
