@@ -25,12 +25,17 @@ class MainViewModel: ObservableObject {
     @Published var showingResult = false
     @Published var showingShareSheet = false
     @Published var showingSubscription = false
+    @Published var showingURLExtractor = false
     
     // Processing state
     private let audioProcessor = AudioProcessor()
     @Published var isProcessing = false
     @Published var currentJob: ProcessingJob?
     @Published var error: String?
+    
+    // Track if input was video for output merging
+    private var inputWasVideo = false
+    private var originalVideoURL: URL?
     
     // Subscription management
     let subscriptionManager = SubscriptionManager.shared
@@ -69,6 +74,12 @@ class MainViewModel: ObservableObject {
     /// Handle selected document from Files app
     func handleSelectedDocument(_ url: URL?) {
         guard let url = url else { return }
+        
+        // Track if video for later merging
+        inputWasVideo = VideoProcessor.isVideoFile(url)
+        if inputWasVideo {
+            originalVideoURL = url
+        }
         
         // Files app provides direct URL access
         if let audioFile = AudioFile(url: url) {
@@ -124,11 +135,19 @@ class MainViewModel: ObservableObject {
                 }
             }
             
+            // Track if video for later merging
+            inputWasVideo = ["mp4", "mov", "m4v"].contains(fileExtension)
+            
             // Save to temporary directory with proper extension
             let tempURL = FileManager.default.temporaryDirectory
                 .appendingPathComponent("input_\(UUID().uuidString).\(fileExtension)")
             
             try data.write(to: tempURL)
+            
+            // Store original video URL for merging later
+            if inputWasVideo {
+                originalVideoURL = tempURL
+            }
             
             // Create AudioFile
             if let audioFile = AudioFile(url: tempURL) {
@@ -233,9 +252,38 @@ class MainViewModel: ObservableObject {
         error = audioProcessor.error
         isProcessing = audioProcessor.isProcessing
         
+        // If video input and processing succeeded, merge audio back into video
+        if currentJob?.status == .completed,
+           inputWasVideo,
+           let originalVideo = originalVideoURL,
+           let processedAudio = currentJob?.outputURL {
+            
+            // Check if user has video export permission
+            if subscriptionManager.currentTier.canExportVideo {
+                await mergeAudioIntoVideo(videoURL: originalVideo, audioURL: processedAudio)
+            }
+            // If no permission, just show the audio result (current behavior)
+        }
+        
         // Show result if successful
         if currentJob?.status == .completed {
             showingResult = true
+        }
+    }
+    
+    /// Merge processed audio back into original video
+    private func mergeAudioIntoVideo(videoURL: URL, audioURL: URL) async {
+        do {
+            let mergedURL = try await VideoProcessor.shared.mergeAsync(
+                videoURL: videoURL,
+                audioURL: audioURL
+            )
+            
+            // Update job with video output
+            currentJob?.complete(outputURL: mergedURL)
+        } catch {
+            // If merge fails, keep audio output - don't fail the whole process
+            print("Video merge failed: \(error.localizedDescription)")
         }
     }
     
@@ -255,6 +303,8 @@ class MainViewModel: ObservableObject {
         error = nil
         isProcessing = false
         showingResult = false
+        inputWasVideo = false
+        originalVideoURL = nil
         audioProcessor.reset()
     }
     
@@ -288,4 +338,3 @@ class MainViewModel: ObservableObject {
         prompt = suggestion
     }
 }
-

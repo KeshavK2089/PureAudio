@@ -99,6 +99,12 @@ struct ContentView: View {
                 .sheet(isPresented: $viewModel.showingSubscription) {
                     SubscriptionView()
                 }
+                .sheet(isPresented: $viewModel.showingURLExtractor) {
+                    URLExtractorView { url in
+                        viewModel.handleSelectedDocument(url)
+                        viewModel.showingURLExtractor = false
+                    }
+                }
             }
             .opacity(viewModel.isProcessing ? 0 : 1)
             
@@ -198,6 +204,35 @@ struct ContentView: View {
                 Text("Supports: MP3, WAV, M4A, MP4, MOV")
                     .font(.caption)
                     .foregroundColor(.subtleGray)
+                
+                // URL Import (Pro Feature)
+                Button {
+                    viewModel.showingURLExtractor = true
+                } label: {
+                    HStack {
+                        Image(systemName: "link")
+                            .font(.title3)
+                        Text("Import from URL")
+                            .font(.headline)
+                        Spacer()
+                        if !SubscriptionManager.shared.currentTier.canExtractURL {
+                            Text("PRO")
+                                .font(.caption2.bold())
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.purple)
+                                .clipShape(Capsule())
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .foregroundColor(.secondary)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                    )
+                }
             }
             .padding(.horizontal, 32)
             

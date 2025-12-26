@@ -2,10 +2,11 @@
 //  SubscriptionTier.swift
 //  AudioPure
 //
-//  Professional subscription tier management
+//  Professional subscription tier management with premium feature flags
 //
 
 import Foundation
+import SwiftUI
 
 enum SubscriptionTier: String, Codable, CaseIterable {
     case free = "free"
@@ -13,7 +14,7 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     case pro = "com.pureaudio.pro"
     case professional = "com.pureaudio.unlimited"
     
-    // MARK: - Tier Configuration
+    // MARK: - Display Properties
     
     var displayName: String {
         switch self {
@@ -24,18 +25,29 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         }
     }
     
-    var dailyLimit: Int {
+    var iconName: String {
         switch self {
-        case .free: return Int.max  // Not limited by daily, but by total
-        case .basic: return Int.max
-        case .pro: return Int.max
-        case .professional: return Int.max
+        case .free: return "star"
+        case .basic: return "star.fill"
+        case .pro: return "crown"
+        case .professional: return "crown.fill"
         }
     }
     
+    var accentColor: Color {
+        switch self {
+        case .free: return .secondary
+        case .basic: return .blue
+        case .pro: return .purple
+        case .professional: return .pink
+        }
+    }
+    
+    // MARK: - Limits
+    
     var monthlyLimit: Int {
         switch self {
-        case .free: return 2  // 2 total lifetime
+        case .free: return 2
         case .basic: return 5
         case .pro: return 20
         case .professional: return 50
@@ -52,10 +64,7 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     }
     
     var hasWatermark: Bool {
-        switch self {
-        case .free: return true
-        default: return false
-        }
+        self == .free
     }
     
     var priorityLevel: Int {
@@ -67,12 +76,46 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         }
     }
     
+    // MARK: - Premium Feature Flags
+    
+    /// Can export video with processed audio (Basic+)
+    var canExportVideo: Bool {
+        switch self {
+        case .free: return false
+        case .basic, .pro, .professional: return true
+        }
+    }
+    
+    /// Can extract audio from TikTok/Instagram URLs (Pro+)
+    var canExtractURL: Bool {
+        switch self {
+        case .free, .basic: return false
+        case .pro, .professional: return true
+        }
+    }
+    
+    /// Can use tap-to-isolate in video mode (Unlimited only)
+    var canTapToIsolate: Bool {
+        self == .professional
+    }
+    
+    /// Minimum tier required to unlock video export
+    static var videoExportMinTier: SubscriptionTier { .basic }
+    
+    /// Minimum tier required for URL extraction
+    static var urlExtractMinTier: SubscriptionTier { .pro }
+    
+    /// Minimum tier required for tap-to-isolate
+    static var tapToIsolateMinTier: SubscriptionTier { .professional }
+    
+    // MARK: - Pricing
+    
     var price: String {
         switch self {
         case .free: return "Free"
-        case .basic: return "$9.99/month"
-        case .pro: return "$29.99/month"
-        case .professional: return "$59.99/month"
+        case .basic: return "$9.99/mo"
+        case .pro: return "$29.99/mo"
+        case .professional: return "$59.99/mo"
         }
     }
     
@@ -82,88 +125,42 @@ enum SubscriptionTier: String, Codable, CaseIterable {
             return [
                 "2 processes total",
                 "15-second audio max",
-                "PureAudio watermark",
-                "Standard queue"
+                "MP3 output only",
+                "AudioPure watermark"
             ]
         case .basic:
             return [
-                "5 processes per month",
+                "5 processes/month",
                 "30-second audio max",
-                "No watermark",
-                "Priority processing"
+                "Video output with audio",
+                "No watermark"
             ]
         case .pro:
             return [
-                "20 processes per month",
+                "20 processes/month",
                 "60-second audio max",
-                "No watermark",
+                "TikTok/Instagram import",
                 "Priority processing"
             ]
         case .professional:
             return [
-                "50 processes per month",
+                "50 processes/month",
                 "2-minute audio max",
-                "No watermark",
-                "VIP priority processing"
+                "Tap-to-isolate video mode",
+                "VIP priority"
             ]
-        }
-    }
-    
-    var badgeColor: String {
-        switch self {
-        case .free: return "gray"
-        case .basic: return "blue"
-        case .pro: return "purple"
-        case .professional: return "pink"
-        }
-    }
-    
-    var iconName: String {
-        switch self {
-        case .free: return "star"
-        case .basic: return "star.fill"
-        case .pro: return "crown"
-        case .professional: return "crown.fill"
         }
     }
 }
 
-// MARK: - Pay-as-you-go Packs
+// MARK: - Feature Lock State
 
-enum ProcessingPack: String, Codable, CaseIterable {
-    case starter = "com.pureaudio.pack.3"
-    case value = "com.pureaudio.pack.10"
-    case pro = "com.pureaudio.pack.30"
+enum FeatureLockState {
+    case unlocked
+    case locked(requiredTier: SubscriptionTier)
     
-    var displayName: String {
-        switch self {
-        case .starter: return "Starter Pack"
-        case .value: return "Value Pack"
-        case .pro: return "Pro Pack"
-        }
-    }
-    
-    var processCount: Int {
-        switch self {
-        case .starter: return 3
-        case .value: return 10
-        case .pro: return 30
-        }
-    }
-    
-    var price: String {
-        switch self {
-        case .starter: return "$5.99"
-        case .value: return "$19.99"
-        case .pro: return "$49.99"
-        }
-    }
-    
-    var savingsText: String? {
-        switch self {
-        case .starter: return nil
-        case .value: return "Save 15%"
-        case .pro: return "Save 25%"
-        }
+    var isLocked: Bool {
+        if case .locked = self { return true }
+        return false
     }
 }
