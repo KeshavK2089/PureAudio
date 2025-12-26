@@ -154,15 +154,15 @@ actor ModalService {
         let dataURL = "data:audio/wav;base64,\(base64Audio)"
         
         // Create JSON request matching Modal backend format
-        // predict_spans: Always true for better accuracy
-        // high_quality: Re-ranking mode for Pro+ users
+        // predict_spans: Pro+ only (adds accuracy but 3-4x slower)
+        // high_quality: Pro+ re-ranking (adds quality but 4x slower)
         let requestBody: [String: Any] = [
             "input": [
                 "audio": dataURL,
                 "prompt": prompt,
                 "mode": mode.rawValue,
-                "predict_spans": true,
-                "high_quality": highQualityMode
+                "predict_spans": highQualityMode,  // Pro+ only for accuracy
+                "high_quality": highQualityMode    // Pro+ only for quality
             ]
         ]
         
