@@ -45,7 +45,7 @@ struct ProcessingView: View {
                         .foregroundColor(.white.opacity(0.8))
                     
                     // Immediate wait time message
-                    Text("This may take 5-6 minutes")
+                    Text("First processing may take a few minutes")
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.6))
                         .padding(.top, 4)

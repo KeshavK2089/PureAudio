@@ -84,7 +84,7 @@ struct ResultView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .padding(.top, 16)
+        .padding(.top, 48) // Extra padding to prevent checkmark cutoff
     }
     
     // MARK: - A/B Comparison Toggle
