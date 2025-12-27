@@ -272,8 +272,8 @@ struct SubscriptionView: View {
                 .multilineTextAlignment(.center)
             
             HStack(spacing: 16) {
-                Link("Terms", destination: URL(string: "https://keshavk2089.github.io/PureAudio/terms.html")!)
-                Link("Privacy", destination: URL(string: "https://keshavk2089.github.io/PureAudio/privacy.html")!)
+                Link("Terms", destination: URL(string: "https://www.audiopure.app/terms.html")!)
+                Link("Privacy", destination: URL(string: "https://www.audiopure.app/privacy.html")!)
             }
             .font(.caption2)
             .foregroundColor(.white.opacity(0.6))
