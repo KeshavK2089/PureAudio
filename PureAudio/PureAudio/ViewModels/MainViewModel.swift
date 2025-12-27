@@ -242,7 +242,6 @@ class MainViewModel: ObservableObject {
         // Update from processor
         currentJob = audioProcessor.currentJob
         error = audioProcessor.error
-        isProcessing = audioProcessor.isProcessing
         
         // If video input and processing succeeded, merge audio back into video
         if currentJob?.status == .completed,
@@ -257,10 +256,14 @@ class MainViewModel: ObservableObject {
             // If no permission, just show the audio result (current behavior)
         }
         
-        // Show result if successful
+        // CRITICAL: Set showingResult BEFORE isProcessing = false
+        // This prevents the brief flash of the file selection view
         if currentJob?.status == .completed {
             showingResult = true
         }
+        
+        // Now safe to end processing state
+        isProcessing = audioProcessor.isProcessing
     }
     
     /// Merge processed audio back into original video
