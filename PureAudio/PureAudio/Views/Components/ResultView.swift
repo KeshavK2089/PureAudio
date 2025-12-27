@@ -30,40 +30,30 @@ struct ResultView: View {
     }
     
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(spacing: 24) {
-                    // Success header
-                    successHeader
-                        .id("top") // Mark top for scrolling
-                    
-                    // A/B Comparison Toggle
-                    if !isVideoOutput {
-                        comparisonToggle
-                    }
-                    
-                    // Media player
-                    if let url = isPlayingOriginal ? originalURL : processedURL {
-                        mediaPlayerSection(url: url)
-                    }
-                    
-                    // Details
-                    detailsSection
-                    
-                    // Action buttons
-                    actionButtons
+        ScrollView {
+            VStack(spacing: 24) {
+                // Success header
+                successHeader
+                
+                // A/B Comparison Toggle
+                if !isVideoOutput {
+                    comparisonToggle
                 }
-                .padding(.vertical, 24)
-            }
-            .onAppear {
-                // Ensure we start at the top
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    withAnimation {
-                        proxy.scrollTo("top", anchor: .top)
-                    }
+                
+                // Media player
+                if let url = isPlayingOriginal ? originalURL : processedURL {
+                    mediaPlayerSection(url: url)
                 }
+                
+                // Details
+                detailsSection
+                
+                // Action buttons
+                actionButtons
             }
+            .padding(.vertical, 24)
         }
+        // ScrollView naturally starts at top - no need for manual scrolling
     }
     
     // MARK: - Success Header
