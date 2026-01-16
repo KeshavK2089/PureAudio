@@ -45,9 +45,9 @@ struct Config: Sendable {
     
     // MARK: - NEW: Audio Duration Limits
     
-    /// HARD LIMIT: Maximum audio duration (30 seconds)
+    /// HARD LIMIT: Maximum audio duration (60 seconds / 1 minute)
     /// Prevents excessive backend costs
-    static let maxAudioDurationSeconds: TimeInterval = 30
+    static let maxAudioDurationSeconds: TimeInterval = 60
     
     /// RECOMMENDED: Optimal duration for best results (15 seconds)
     /// Faster processing, lower costs

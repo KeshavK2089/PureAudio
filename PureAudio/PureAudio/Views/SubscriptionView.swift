@@ -83,40 +83,40 @@ struct SubscriptionView: View {
     
     private var premiumHeaderSection: some View {
         VStack(spacing: 16) {
-            // Animated crown with glow
+            // Professional waveform icon
             ZStack {
                 // Glow effect
-                Image(systemName: "crown.fill")
+                Image(systemName: "waveform.circle.fill")
                     .font(.system(size: 70))
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [.yellow, .orange],
+                            colors: [.primaryBlue, .skyBlue],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
                     .blur(radius: 20)
-                    .opacity(0.6)
+                    .opacity(0.5)
                 
-                // Main crown
-                Image(systemName: "crown.fill")
+                // Main icon
+                Image(systemName: "waveform.circle.fill")
                     .font(.system(size: 60))
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [.yellow, .orange, .yellow],
+                            colors: [.primaryBlue, .skyBlue],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
-                    .shadow(color: .orange.opacity(0.5), radius: 10, x: 0, y: 5)
+                    .shadow(color: .primaryBlue.opacity(0.4), radius: 10, x: 0, y: 5)
             }
             
             VStack(spacing: 8) {
-                Text("Unlock AudioPure Pro")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                Text("AudioPure Pro")
+                    .font(.system(size: 28, weight: .bold, design: .default))
                     .foregroundColor(.white)
                 
-                Text("Professional audio processing, unlimited creativity")
+                Text("Professional audio processing for creators")
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.8))
                     .multilineTextAlignment(.center)
@@ -229,7 +229,7 @@ struct SubscriptionView: View {
                 
                 // Feature rows
                 PremiumFeatureRow(feature: "Processes", free: "3", basic: "10/mo", pro: "30/mo", unlimited: "∞")
-                PremiumFeatureRow(feature: "Max length", free: "15s", basic: "30s", pro: "60s", unlimited: "2min")
+                PremiumFeatureRow(feature: "Max length", free: "15s", basic: "1min", pro: "2.5min", unlimited: "5min")
                 PremiumFeatureRow(feature: "High Quality", free: "—", basic: "—", pro: "✓", unlimited: "✓")
                 PremiumFeatureRow(feature: "Priority", free: "—", basic: "—", pro: "✓", unlimited: "VIP")
             }
@@ -265,18 +265,47 @@ struct SubscriptionView: View {
     // MARK: - Terms Section
     
     private var termsSection: some View {
-        VStack(spacing: 8) {
-            Text("Subscription auto-renews unless cancelled 24 hours before end of period. Cancel anytime in Settings.")
-                .font(.caption2)
-                .foregroundColor(.white.opacity(0.5))
-                .multilineTextAlignment(.center)
-            
-            HStack(spacing: 16) {
-                Link("Terms", destination: URL(string: "https://www.audiopure.app/terms.html")!)
-                Link("Privacy", destination: URL(string: "https://www.audiopure.app/privacy.html")!)
+        VStack(spacing: 12) {
+            // Subscription disclosure - required by Apple Guideline 3.1.2
+            VStack(spacing: 6) {
+                Text("Subscription Terms")
+                    .font(.caption.bold())
+                    .foregroundColor(.white.opacity(0.7))
+                
+                Text("• Subscriptions are billed monthly to your Apple ID")
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.5))
+                
+                Text("• Payment will be charged at confirmation of purchase")
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.5))
+                
+                Text("• Subscription auto-renews unless cancelled at least 24 hours before the end of the current period")
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.5))
+                
+                Text("• Manage subscriptions in Settings > Apple ID > Subscriptions")
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.5))
             }
-            .font(.caption2)
-            .foregroundColor(.white.opacity(0.6))
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+            
+            // Terms and Privacy links - required by Apple Guideline 3.1.2
+            HStack(spacing: 20) {
+                Link(destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!) {
+                    Text("Terms of Use (EULA)")
+                        .font(.caption)
+                        .underline()
+                }
+                
+                Link(destination: URL(string: "https://www.audiopure.app/privacy.html")!) {
+                    Text("Privacy Policy")
+                        .font(.caption)
+                        .underline()
+                }
+            }
+            .foregroundColor(.white.opacity(0.7))
         }
         .padding()
     }
@@ -328,31 +357,31 @@ struct AnimatedPremiumBackground: View {
     var body: some View {
         LinearGradient(
             colors: [
-                Color(red: 0.1, green: 0.05, blue: 0.2),
-                Color(red: 0.2, green: 0.1, blue: 0.4),
-                Color(red: 0.1, green: 0.05, blue: 0.3)
+                Color(red: 0.02, green: 0.08, blue: 0.15),
+                Color(red: 0.05, green: 0.12, blue: 0.22),
+                Color(red: 0.03, green: 0.10, blue: 0.18)
             ],
             startPoint: animate ? .topLeading : .bottomTrailing,
             endPoint: animate ? .bottomTrailing : .topLeading
         )
         .ignoresSafeArea()
         .overlay(
-            // Floating orbs
+            // Floating orbs - blue theme
             ZStack {
                 Circle()
-                    .fill(.purple.opacity(0.3))
+                    .fill(Color.primaryBlue.opacity(0.25))
                     .frame(width: 200, height: 200)
                     .blur(radius: 60)
                     .offset(x: animate ? 100 : -100, y: animate ? -150 : 150)
                 
                 Circle()
-                    .fill(.pink.opacity(0.2))
+                    .fill(Color.skyBlue.opacity(0.2))
                     .frame(width: 150, height: 150)
                     .blur(radius: 50)
                     .offset(x: animate ? -80 : 80, y: animate ? 200 : -100)
                 
                 Circle()
-                    .fill(.blue.opacity(0.2))
+                    .fill(Color.primaryBlue.opacity(0.15))
                     .frame(width: 180, height: 180)
                     .blur(radius: 55)
                     .offset(x: animate ? 50 : -50, y: animate ? 100 : -200)
@@ -370,18 +399,18 @@ struct PremiumSubscriptionCard: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            // Popular badge
+            // Recommended badge
             if isPopular {
                 HStack {
                     Spacer()
-                    Text("MOST POPULAR")
+                    Text("RECOMMENDED")
                         .font(.caption2.bold())
                         .foregroundColor(.white)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(
                             LinearGradient(
-                                colors: [.orange, .pink],
+                                colors: [.primaryBlue, .skyBlue],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -419,12 +448,17 @@ struct PremiumSubscriptionCard: View {
             
             Divider().background(.white.opacity(0.2))
             
-            // Price
+            // Subscription details - required by Apple Guideline 3.1.2
             VStack(spacing: 4) {
+                Text(product.displayName)
+                    .font(.subheadline.bold())
+                    .foregroundColor(.white.opacity(0.8))
+                
                 Text(product.displayPrice)
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
-                Text(periodText)
+                
+                Text(subscriptionPeriodText)
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.6))
             }
@@ -438,13 +472,13 @@ struct PremiumSubscriptionCard: View {
                     .padding(.vertical, 16)
                     .background(
                         LinearGradient(
-                            colors: isPopular ? [.orange, .pink] : [.primaryPurple, .accentPink],
+                            colors: [.primaryBlue, .skyBlue],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
                     )
                     .cornerRadius(14)
-                    .shadow(color: isPopular ? .orange.opacity(0.4) : .purple.opacity(0.4), radius: 10, x: 0, y: 5)
+                    .shadow(color: .primaryBlue.opacity(0.4), radius: 10, x: 0, y: 5)
             }
         }
         .padding(20)
@@ -455,7 +489,7 @@ struct PremiumSubscriptionCard: View {
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(
                             isPopular ?
-                            LinearGradient(colors: [.orange.opacity(0.5), .pink.opacity(0.5)], startPoint: .topLeading, endPoint: .bottomTrailing) :
+                            LinearGradient(colors: [.primaryBlue.opacity(0.6), .skyBlue.opacity(0.4)], startPoint: .topLeading, endPoint: .bottomTrailing) :
                             LinearGradient(colors: [.white.opacity(0.2), .white.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing),
                             lineWidth: isPopular ? 2 : 1
                         )
@@ -472,38 +506,56 @@ struct PremiumSubscriptionCard: View {
     }
     
     private var tierIcon: String {
-        if product.id.contains("basic") { return "star" }
-        if product.id.contains("pro") { return "star.fill" }
-        if product.id.contains("unlimited") { return "sparkles" }
-        return "crown"
+        if product.id.contains("basic") { return "waveform" }
+        if product.id.contains("pro") { return "waveform.badge.plus" }
+        if product.id.contains("unlimited") { return "waveform.badge.magnifyingglass" }
+        return "waveform.circle"
     }
     
     private var tierGradient: LinearGradient {
         if product.id.contains("basic") {
-            return LinearGradient(colors: [.blue, .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
+            return LinearGradient(colors: [.skyBlue, .primaryBlue], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
         if product.id.contains("pro") {
-            return LinearGradient(colors: [.orange, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+            return LinearGradient(colors: [.primaryBlue, .indigo], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
         if product.id.contains("unlimited") {
-            return LinearGradient(colors: [.purple, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+            return LinearGradient(colors: [.indigo, .deepPurple], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
-        return LinearGradient(colors: [.yellow, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+        return LinearGradient(colors: [.primaryBlue, .skyBlue], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
     
     private var tierFeatures: [String] {
         if product.id.contains("basic") {
-            return ["10 audio processes/month", "Up to 30 second clips", "No watermark"]
+            return ["10 audio processes/month", "Up to 1 minute clips", "No watermark"]
         } else if product.id.contains("pro") {
-            return ["30 audio processes/month", "High Quality Mode", "Priority processing"]
+            return ["30 audio processes/month", "Up to 2.5 minute clips", "Priority processing"]
         } else if product.id.contains("unlimited") {
-            return ["Unlimited audio processes", "High Quality Mode", "VIP priority"]
+            return ["Unlimited audio processes", "Up to 5 minute clips", "VIP priority"]
         }
         return []
     }
     
-    private var periodText: String {
-        "per month"
+    private var subscriptionPeriodText: String {
+        guard let subscription = product.subscription else {
+            return "per month"
+        }
+        
+        let unit = subscription.subscriptionPeriod.unit
+        let value = subscription.subscriptionPeriod.value
+        
+        switch unit {
+        case .day:
+            return value == 1 ? "per day" : "per \(value) days"
+        case .week:
+            return value == 1 ? "per week" : "per \(value) weeks"
+        case .month:
+            return value == 1 ? "per month" : "per \(value) months"
+        case .year:
+            return value == 1 ? "per year" : "per \(value) years"
+        @unknown default:
+            return "per period"
+        }
     }
 }
 
@@ -524,7 +576,7 @@ struct PremiumFeatureRow: View {
             Text(free).frame(width: 45)
             Text(basic).frame(width: 45)
             Text(pro).frame(width: 45)
-                .foregroundColor(.accentPink)
+                .foregroundColor(.primaryBlue)
             Text(unlimited).frame(width: 45)
         }
         .font(.caption)

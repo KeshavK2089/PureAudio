@@ -57,9 +57,9 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     var maxAudioDuration: TimeInterval {
         switch self {
         case .free: return 15
-        case .basic: return 30
-        case .pro: return 60
-        case .professional: return 120
+        case .basic: return 60
+        case .pro: return 150      // 2.5 minutes
+        case .professional: return 300  // 5 minutes
         }
     }
     
@@ -114,21 +114,21 @@ enum SubscriptionTier: String, Codable, CaseIterable {
         case .basic:
             return [
                 "10 processes/month",
-                "30-second audio max",
+                "Up to 1-minute clips",
                 "Video output included",
                 "No watermark"
             ]
         case .pro:
             return [
                 "30 processes/month",
-                "60-second audio max",
+                "Up to 2.5 minute clips",
                 "High Quality Mode",
                 "Priority processing"
             ]
         case .professional:
             return [
                 "Unlimited processes",
-                "2-minute audio max",
+                "Up to 5 minute clips",
                 "High Quality Mode",
                 "VIP priority"
             ]
